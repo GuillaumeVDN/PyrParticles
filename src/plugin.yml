@@ -1,0 +1,14 @@
+# Display
+name: PyrParticles
+description: 'An awesome cosmetics plugin with particles, trails and gadgets ! (formerly pParticles)'
+author: PYRRH4
+website: www.pyrrh4.be
+# Techy
+version: 4.0.0
+main: be.pyrrh4.pyrparticles.PyrParticles
+depend: [PyrCore]
+# Commands
+commands:
+  pyrparticles:
+    aliases: [pparticles, pp]
+    description: Cosmetics

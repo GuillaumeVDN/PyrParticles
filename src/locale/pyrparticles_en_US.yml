@@ -1,0 +1,91 @@
+# Locale : en_US
+
+# Messages
+
+messages:
+  particle_enable: '&2PyrParticles >> &7You enabled particle &a$PARTICLE&7.'
+  trail_enable: '&2PyrParticles >> &7You enabled trail &a$TRAIL&7.'
+  gadget_enable: '&2PyrParticles >> &7You activated gadget &a$GADGET&7.'
+  particle_disable: '&2PyrParticles >> &7You disabled particles.'
+  trail_disable: '&2PyrParticles >> &7You disabled trail.'
+  cooldown: '&4PyrParticles >> &7You need to wait &c$COOLDOWN &7to use this again.'
+  particle_list: '&2PyrParticles >> &7Available particles effects : &a$LIST'
+  trail_list: '&2PyrParticles >> &7Available trails : &a$LIST'
+  gadget_list: '&2PyrParticles >> &7Available gadgets : &a$LIST'
+  unknown_particle: '&4PyrParticles >> &7Unknown particle effect. Available effects : /pp particle list'
+  unknown_trail: '&4PyrParticles >> &7Unknown trail. Available trails : /pp trail list'
+  unknown_gadget: '&4PyrParticles >> &7Unknown gadget. Available gadgets : /pp gadget list'
+  locked: '&4PyrParticles >> &7This is locked, unfortunately !'
+  # Particles
+  particle_water: 'water'
+  particle_bubble: 'bubble'
+  particle_lava: 'lava'
+  particle_magma: 'magma'
+  particle_fire: 'fire'
+  particle_smoke: 'smoke'
+  particle_magic: 'magic'
+  particle_color: 'color'
+  particle_spell: 'spell'
+  particle_sparks: 'sparks'
+  particle_love: 'love'
+  particle_music: 'music'
+  particle_happy: 'happy'
+  particle_angry: 'angry'
+  particle_enchantment: 'enchantment'
+  particle_suspended: 'suspended'
+  particle_cloud: 'cloud'
+  particle_ender: 'ender'
+  particle_redstone: 'redstone'
+  particle_slime: 'slime'
+  particle_snowball: 'snowball'
+  particle_shovel: 'shovel'
+  particle_random: 'random'
+  # Trails
+  trail_carpet: 'carpet'
+  trail_wool: 'wool'
+  trail_glass: 'glass'
+  trail_clay: 'clay'
+  trail_frost: 'frost'
+  trail_podzol: 'podzol'
+  trail_polished: 'polished'
+  trail_wood: 'wood'
+  trail_bedrock: 'bedrock'
+  trail_sea: 'sea'
+  trail_riches: 'riches'
+  trail_mine: 'mine'
+  trail_nether: 'nether'
+  trail_sandstone: 'sandstone'
+  # Gadgets
+  gadget_color_gun: 'color gun'
+  gadget_cocoa_bomb: 'cocoa bomb'
+  gadget_disco_box: 'disco box'
+  gadget_disco_sheep: 'disco sheep'
+  gadget_mob_dance: 'mob dance'
+  gadget_pig_fountain: 'pig fountain'
+  gadget_pyromaniac: 'pyromaniac'
+  # Hotbar menu item
+  hotbar_item_name: '&6PyrParticles'
+  hotbar_item_lore:
+    - '&7Click to open'
+  # Main GUI
+  gui_main_name: 'PyrParticles'
+  gui_main_particles_name: '&6Particle effects'
+  gui_main_particles_lore:
+    - '&7Click to open'
+  gui_main_trails_name: '&6Trails'
+  gui_main_trails_lore:
+    - '&7Click to open'
+  gui_main_gadgets_name: '&6Gadgets'
+  gui_main_gadgets_lore:
+    - '&7Click to open'
+  gui_main_particles_clear_name: '&cClear particles effect'
+  gui_main_trail_clear_name: '&cClear trail'
+  # Particles GUI
+  gui_particles_name: 'PyrParticles/Particles'
+  # Trails GUI
+  gui_trails_name: 'PyrParticles/Trails'
+  # Gadgets GUI
+  gui_gadgets_name: 'PyrParticles/Gadgets'
+  # Misc
+  locked: '&c&lLocked'
+  unlocked: '&a&lUnlocked'

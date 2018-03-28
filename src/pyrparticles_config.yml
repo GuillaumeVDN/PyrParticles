@@ -1,0 +1,67 @@
+#----------------------------------------------------------------------------------------------------
+# Configuration file for PyrParticles
+#----------------------------------------------------------------------------------------------------
+
+# Locale
+
+locale: pyrparticles_en_US.yml
+
+#----------------------------------------------------------------------------------------------------
+# Settings
+#----------------------------------------------------------------------------------------------------
+
+settings:
+
+  # Emplacement of the hotbar menu item (0 - 8, set to -1 to disable)
+  hotbar_menu_item: -1
+  
+  # Emplacement of the hotbar gadget item (0 - 8, set to -1 to disable)
+  hotbar_gadget_item: -1
+  
+  # Emplacement of the color gun in the hotbar (0 - 8) (can be the same as hotbar_gadget_item)
+  hotbar_color_gun_item: 5
+  
+  # Restrict PyrParticles to some worlds (set it to empty list to disable)
+  enabled_worlds: []
+
+  # Frequency to display particles, mesured in ticks (1 second = 20 ticks)
+  particles_ticks: 5
+
+  # Every time the particle loop is called, display this amount of particles
+  particles_amount: 2
+  
+  # Frequency to display trails, mesured in ticks (1 second = 20 ticks)
+  trails_ticks: 4
+
+  # Stay time for trails (in seconds)
+  trails_persistence: 3
+
+  # Stay time for the color gun (in seconds)
+  color_gun_persistence: 3
+
+  # Radius for the color gun (in blocks)
+  color_gun_radius: 3
+  
+  # Disco box size (radius, in blocks)
+  disco_box_radius: 3
+  
+  # Frequency to change disco box blocks, mesured in ticks (1 second = 20 ticks)
+  disco_box_ticks: 5
+  
+  # Frequency to change disco sheep color, mesured in ticks (1 second = 20 ticks)
+  disco_sheep_ticks: 3
+  
+  # Frequency to rotate mob dance mobs, mesured in ticks (1 second = 20 ticks)
+  mob_dance_ticks: 1
+  
+  # Gadgets cooldown (in seconds)
+  gadgets_cooldown: 30
+  
+  # Gadgets durations (in seconds)
+  gadget_duration:
+    color_gun: 10
+    disco_box: 20
+    disco_sheep: 10
+    mob_dance: 10
+    pig_fountain: 10
+    pyromaniac: 10
