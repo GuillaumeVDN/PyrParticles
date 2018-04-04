@@ -16,7 +16,7 @@ public enum ParticleEffect {
 	WATER(Type.DRIP_WATER, Material.WATER_BUCKET),
 	BUBBLE(Type.WATER_BUBBLE, Material.BOAT),
 	LAVA(Type.WATER_WAKE, Material.LAVA_BUCKET),
-	MAGMA(Type.LAVA, Material.MAGMA),
+	MAGMA(Type.LAVA, Material.BLAZE_POWDER),
 	FIRE(Type.FLAME, Material.FIREBALL),
 	SMOKE(Type.SMOKE_NORMAL, Material.FURNACE),
 	MAGIC(Type.SPELL_WITCH, Material.CAULDRON_ITEM),
