@@ -18,7 +18,9 @@ public class TrailsGUI extends GUI {
 		// preload
 		int slot = -1;
 		for (Trail trail : Trail.values()) {
-			addItem(ItemData.create("trail_" + trail.toString(), ++slot, -1, trail.getGuiItemType(), trail.getGuiItemData(), 1, "§6" + Utils.capitalizeFirstLetter(trail.getName()), PyrParticles.instance().getLocale().getMessage(trail.hasPermission(player) ? "unlocked" : "locked").getLines()));
+			if (trail.canUse()) {
+				addItem(ItemData.create("trail_" + trail.toString(), ++slot, -1, trail.getGuiItemType(), trail.getGuiItemData(), 1, "§6" + Utils.capitalizeFirstLetter(trail.getName()), PyrParticles.instance().getLocale().getMessage(trail.hasPermission(player) ? "unlocked" : "locked").getLines()));
+			}
 		}
 		addItem(MainGUI.ITEM_PREVIOUS);
 	}

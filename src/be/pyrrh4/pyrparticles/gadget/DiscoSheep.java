@@ -3,7 +3,6 @@ package be.pyrrh4.pyrparticles.gadget;
 import java.util.ArrayList;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
@@ -26,7 +25,7 @@ import be.pyrrh4.pyrparticles.util.RandomMaterial;
 public class DiscoSheep extends AbstractGadget implements Listener {
 
 	// static fields
-	private static final RandomMaterial type = new RandomMaterial(Material.WOOL, 15);
+	private static final RandomMaterial type = new RandomMaterial("WOOL", 15);
 
 	// fields and constructor
 	private Sheep sheep;
@@ -55,7 +54,7 @@ public class DiscoSheep extends AbstractGadget implements Listener {
 				// sheep color
 				sheep.setColor(Utils.getRandomDyeColor());
 				// items
-				Item item = sheep.getWorld().dropItem(sheep.getLocation().clone().add(0.0D, 1.0D, 0.0D), GUI.createItem(type.getNext(), 1));
+				Item item = sheep.getWorld().dropItem(sheep.getLocation().clone().add(0.0D, 1.0D, 0.0D), GUI.createItem(type.next(), 1));
 				item.setPickupDelay(Integer.MAX_VALUE);
 				item.setVelocity(new Vector(Utils.randomDouble(-0.6D, 0.6D), Utils.randomDouble(0.0D, 0.6D), Utils.randomDouble(-0.6D, 0.6D)));
 				items.add(item);

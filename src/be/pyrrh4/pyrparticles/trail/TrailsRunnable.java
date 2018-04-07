@@ -22,20 +22,22 @@ public class TrailsRunnable implements Runnable {
 			if (data.getTrail() != null) {
 				// if world is allowed
 				if (PyrParticles.instance().getEnabledWorlds().isEmpty() || PyrParticles.instance().getEnabledWorlds().contains(player.getWorld().getName())) {
-
-					// check if can apply trail
+					// check if trail can be used
 					Trail trail = data.getTrail();
-					Block block = trail.isUpperBlock() ? player.getLocation().getBlock() : player.getLocation().getBlock().getRelative(BlockFace.DOWN);
-					if (player.isOnGround() && (trail.isUpperBlock() ? block.getTypeId() == 0 && block.getRelative(BlockFace.DOWN).getType().isSolid() : block.getType().isSolid())) {
-						// remove previous blocks there first
-						PyrParticles.instance().removeTrailBlocksAt(block.getLocation());
-						// send block change
-						MaterialData next = trail.getNextType();
-						for (Player pl : block.getWorld().getPlayers()) {
-							pl.sendBlockChange(block.getLocation(), next.getItemTypeId(), next.getData());
+					if (trail.canUse()) {
+						// check if can apply trail
+						Block block = trail.isUpperBlock() ? player.getLocation().getBlock() : player.getLocation().getBlock().getRelative(BlockFace.DOWN);
+						if (player.isOnGround() && (trail.isUpperBlock() ? block.getTypeId() == 0 && block.getRelative(BlockFace.DOWN).getType().isSolid() : block.getType().isSolid())) {
+							// remove previous blocks there first
+							PyrParticles.instance().removeTrailBlocksAt(block.getLocation());
+							// send block change
+							MaterialData next = trail.nextType();
+							for (Player pl : block.getWorld().getPlayers()) {
+								pl.sendBlockChange(block.getLocation(), next.getItemTypeId(), next.getData());
+							}
+							// add it to previous blocks so it'll be restored later
+							PyrParticles.instance().getTrailBlocks().add(new ChangedBlock(block, Utils.asList(block.getWorld().getPlayers())));
 						}
-						// add it to previous blocks so it'll be restored later
-						PyrParticles.instance().getTrailBlocks().add(new ChangedBlock(block, Utils.asList(block.getWorld().getPlayers())));
 					}
 				}
 			}

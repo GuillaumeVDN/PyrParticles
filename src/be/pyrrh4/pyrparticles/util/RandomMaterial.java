@@ -8,25 +8,29 @@ import be.pyrrh4.core.util.Utils;
 public class RandomMaterial {
 
 	// fields and constructor
-	private Material type;
+	private String type;
 	private int maxData;
 
-	public RandomMaterial(Material type, int maxData) {
+	public RandomMaterial(String type, int maxData) {
 		this.type = type;
 		this.maxData = maxData;
 	}
 
 	// getters
-	public Material getType() {
-		return type;
+	public Material type() {
+		return Utils.valueOfOrNull(Material.class, type);
 	}
 
-	public int getMaxData() {
+	public int maxData() {
 		return maxData;
 	}
 
-	public MaterialData getNext() {
-		return new MaterialData(type, (byte) (maxData == 0 ? 0 : Utils.random(maxData)));
+	public MaterialData next() {
+		return new MaterialData(type(), (byte) (maxData == 0 ? 0 : Utils.random(maxData)));
+	}
+
+	public boolean exists() {
+		return type != null;
 	}
 
 }

@@ -25,7 +25,7 @@ import be.pyrrh4.pyrparticles.util.RandomMaterial;
 public class DiscoBox extends AbstractGadget implements Listener {
 
 	// static fields
-	private static final RandomMaterial type = new RandomMaterial(Material.STAINED_GLASS, 15);
+	private static final RandomMaterial type = new RandomMaterial("STAINED_GLASS", 15);
 	private static final ArrayList<Material> records = Utils.asList(Material.GREEN_RECORD, Material.RECORD_3, Material.RECORD_4, Material.RECORD_5, Material.RECORD_8, Material.RECORD_9, Material.RECORD_12);
 
 	// fields and constructor
@@ -126,13 +126,15 @@ public class DiscoBox extends AbstractGadget implements Listener {
 	private void updateBlocks() {
 		// borders
 		for (Block block : borders.keySet()) {
-			block.setTypeIdAndData(type.getType().getId(), type.getNext().getData(), false);
+			MaterialData next = type.next();
+			block.setTypeIdAndData(next.getItemTypeId(), next.getData(), false);
 		}
 		// light
 		if (toggleLight) {
 			lightBlock.setType(Material.GLOWSTONE);
 		} else {
-			lightBlock.setTypeIdAndData(type.getType().getId(), type.getNext().getData(), false);
+			MaterialData next = type.next();
+			lightBlock.setTypeIdAndData(next.getItemTypeId(), next.getData(), false);
 		}
 		toggleLight = !toggleLight;
 	}

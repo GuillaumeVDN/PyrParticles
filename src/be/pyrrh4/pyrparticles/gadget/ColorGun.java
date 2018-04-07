@@ -28,7 +28,7 @@ public class ColorGun extends AbstractGadget implements Listener {
 
 	// static fields
 	private static final ItemStack gunItem = GUI.createItem(Material.GOLD_BARDING, 0, 1, "§6" + Utils.capitalizeFirstLetter(Gadget.COLOR_GUN.getName()), null);
-	private static final RandomMaterial type = new RandomMaterial(Material.WOOL, 15), carpetType = new RandomMaterial(Material.CARPET, 15);
+	private static final RandomMaterial type = new RandomMaterial("WOOL", 15), carpetType = new RandomMaterial("CARPET", 15);
 
 	// fields and constructor
 	private ArrayList<Snowball> snowballs = new ArrayList<Snowball>();
@@ -89,8 +89,8 @@ public class ColorGun extends AbstractGadget implements Listener {
 		if (snowballs.contains(proj)) {
 			snowballs.remove(proj);
 			Location location = proj.getLocation();
-			MaterialData typeNormal = type.getNext();
-			MaterialData typeCarpet = carpetType.getNext();
+			MaterialData typeNormal = type.next();
+			MaterialData typeCarpet = carpetType.next();
 			for (Block block : Utils.getBlocksRound(location, PyrParticles.instance().getColorGunRadius()).keySet()) {
 				if (block.getType().isSolid()) {
 					// remove previous blocks there first

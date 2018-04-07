@@ -14,20 +14,20 @@ import be.pyrrh4.pyrparticles.util.RandomMaterial;
 
 public enum Trail {
 
-	CARPET(true, Material.CARPET, 9, new RandomMaterial(Material.CARPET, 15)),
-	WOOL(Material.WOOL, 10, new RandomMaterial(Material.WOOL, 15)),
-	GLASS(Material.STAINED_GLASS, 1, new RandomMaterial(Material.STAINED_GLASS, 15)),
-	CLAY(Material.STAINED_CLAY, 4, new RandomMaterial(Material.STAINED_CLAY, 15)),
-	FROST(Material.SNOW_BLOCK, new RandomMaterial(Material.SNOW_BLOCK, 0), new RandomMaterial(Material.PACKED_ICE, 0)),
-	PODZOL(Material.DIRT, 2, new RandomMaterial(Material.DIRT, 2)),
-	POLISHED(Material.STONE, 4, new RandomMaterial(Material.STONE, 6)),
-	WOOD(Material.WOOD, new RandomMaterial(Material.WOOD, 4), new RandomMaterial(Material.LOG, 3)),
-	BEDROCK(Material.BEDROCK, new RandomMaterial(Material.BEDROCK, 0)),
-	SEA(Material.SPONGE, new RandomMaterial(Material.SPONGE, 0), new RandomMaterial(Material.PRISMARINE, 0), new RandomMaterial(Material.SEA_LANTERN, 0)),
-	RICHES(Material.GOLD_BLOCK, new RandomMaterial(Material.GOLD_BLOCK, 0), new RandomMaterial(Material.DIAMOND_BLOCK, 0), new RandomMaterial(Material.LAPIS_BLOCK, 0), new RandomMaterial(Material.REDSTONE_BLOCK, 0)),
-	MINE(Material.OBSIDIAN, new RandomMaterial(Material.OBSIDIAN, 0), new RandomMaterial(Material.COAL_BLOCK, 0)),
-	NETHER(Material.NETHERRACK, new RandomMaterial(Material.NETHERRACK, 0), new RandomMaterial(Material.NETHER_BRICK, 0)),
-	SANDSTONE(Material.SANDSTONE, new RandomMaterial(Material.SANDSTONE, 0), new RandomMaterial(Material.RED_SANDSTONE, 0));
+	CARPET(true, Material.CARPET, 9, new RandomMaterial("CARPET", 15)),
+	WOOL(Material.WOOL, 10, new RandomMaterial("WOOL", 15)),
+	GLASS(Material.STAINED_GLASS, 1, new RandomMaterial("STAINED_GLASS", 15)),
+	CLAY(Material.STAINED_CLAY, 4, new RandomMaterial("STAINED_CLAY", 15)),
+	FROST(Material.SNOW_BLOCK, new RandomMaterial("SNOW_BLOCK", 0), new RandomMaterial("PACKED_ICE", 0)),
+	PODZOL(Material.DIRT, 2, new RandomMaterial("DIRT", 2)),
+	POLISHED(Material.STONE, 4, new RandomMaterial("STONE", 6)),
+	WOOD(Material.WOOD, new RandomMaterial("WOOD", 4), new RandomMaterial("LOG", 3)),
+	BEDROCK(Material.BEDROCK, new RandomMaterial("BEDROCK", 0)),
+	SEA(Material.SPONGE, new RandomMaterial("SPONGE", 0), new RandomMaterial("PRISMARINE", 0), new RandomMaterial("SEA_LANTERN", 0)),
+	RICHES(Material.GOLD_BLOCK, new RandomMaterial("GOLD_BLOCK", 0), new RandomMaterial("DIAMOND_BLOCK", 0), new RandomMaterial("LAPIS_BLOCK", 0), new RandomMaterial("REDSTONE_BLOCK", 0)),
+	MINE(Material.OBSIDIAN, new RandomMaterial("OBSIDIAN", 0), new RandomMaterial("COAL_BLOCK", 0)),
+	NETHER(Material.NETHERRACK, new RandomMaterial("NETHERRACK", 0), new RandomMaterial("NETHER_BRICK", 0)),
+	SANDSTONE(Material.SANDSTONE, new RandomMaterial("SANDSTONE", 0), new RandomMaterial("RED_SANDSTONE", 0));
 
 	// constructor
 	private ArrayList<RandomMaterial> types;
@@ -56,8 +56,17 @@ public enum Trail {
 
 	// getters
 
-	public MaterialData getNextType() {
-		return Utils.random(types).getNext();
+	public boolean canUse() {
+		for (RandomMaterial type : types) {
+			if (type.exists()) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public MaterialData nextType() {
+		return Utils.random(types).next();
 	}
 
 	public Material getGuiItemType() {
