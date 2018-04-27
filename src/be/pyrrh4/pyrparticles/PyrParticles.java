@@ -173,7 +173,7 @@ public class PyrParticles extends PyrPlugin implements Listener {
 
 	@Override
 	protected void forceCloseUserPluginData() {
-		for (User user : Core.instance().getUsers()) {
+		for (User user : Core.instance().getUsers().values()) {
 			user.forceClosePluginData(PyrParticlesUser.class);
 		}
 	}
