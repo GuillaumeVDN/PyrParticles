@@ -17,11 +17,17 @@ import org.bukkit.inventory.ItemStack;
 import be.pyrrh4.core.Core;
 import be.pyrrh4.core.PyrPlugin;
 import be.pyrrh4.core.User;
-import be.pyrrh4.core.command.Arguments.Performer;
-import be.pyrrh4.core.command.CallInfo;
 import be.pyrrh4.core.command.Command;
 import be.pyrrh4.core.gui.GUI;
 import be.pyrrh4.core.util.Utils;
+import be.pyrrh4.pyrparticles.commands.CommandGadget;
+import be.pyrrh4.pyrparticles.commands.CommandGadgetList;
+import be.pyrrh4.pyrparticles.commands.CommandParticle;
+import be.pyrrh4.pyrparticles.commands.CommandParticleList;
+import be.pyrrh4.pyrparticles.commands.CommandParticleRemove;
+import be.pyrrh4.pyrparticles.commands.CommandTrail;
+import be.pyrrh4.pyrparticles.commands.CommandTrailList;
+import be.pyrrh4.pyrparticles.commands.CommandTrailRemove;
 import be.pyrrh4.pyrparticles.gadget.AbstractGadget;
 import be.pyrrh4.pyrparticles.gadget.Gadget;
 import be.pyrrh4.pyrparticles.gui.MainGUI;
@@ -261,20 +267,10 @@ public class PyrParticles extends PyrPlugin implements Listener {
 	protected void enable() {
 		// call reload
 		innerReload();
-		// register command
-		Command command = new Command(this, "pyrparticles", "pp", new Performer() {
-			@Override
-			public void perform(CallInfo call) {
-				if (Utils.instanceOf(call.getSender(), Player.class)) {
-					mainGUI.open(call.getSenderAsPlayer(), false);
-				} else {
-					Core.instance().getLocale().getMessage("error_in_game").send(call.getSender());
-				}
-			}
-		});
-		Commands.registerCommands(command);
-		// register events
+		// registration
 		Bukkit.getPluginManager().registerEvents(this, this);
+		registerCommand(new Command(this, "pyrparticles", "pp", new CommandParticle(), new CommandParticleList(), new CommandParticleRemove(), new CommandTrail(), new CommandTrailList(), new CommandTrailRemove(),
+				new CommandGadget(), new CommandGadgetList()));
 	}
 
 	// ----------------------------------------------------------------------
