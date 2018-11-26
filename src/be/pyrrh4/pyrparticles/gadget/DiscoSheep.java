@@ -16,16 +16,11 @@ import org.bukkit.event.inventory.InventoryPickupItemEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
-import be.pyrrh4.core.compat.sound.Sound;
-import be.pyrrh4.core.gui.GUI;
 import be.pyrrh4.core.util.Utils;
+import be.pyrrh4.core.versioncompat.sound.Sound;
 import be.pyrrh4.pyrparticles.PyrParticles;
-import be.pyrrh4.pyrparticles.util.RandomMaterial;
 
 public class DiscoSheep extends AbstractGadget implements Listener {
-
-	// static fields
-	private static final RandomMaterial type = new RandomMaterial("WOOL", 15);
 
 	// fields and constructor
 	private Sheep sheep;
@@ -54,7 +49,7 @@ public class DiscoSheep extends AbstractGadget implements Listener {
 				// sheep color
 				sheep.setColor(Utils.getRandomDyeColor());
 				// items
-				Item item = sheep.getWorld().dropItem(sheep.getLocation().clone().add(0.0D, 1.0D, 0.0D), GUI.createItem(type.next(), 1));
+				Item item = sheep.getWorld().dropItem(sheep.getLocation().clone().add(0.0D, 1.0D, 0.0D), AbstractGadget.RANDOM_WOOL.next().getNewCurrentStack());
 				item.setPickupDelay(Integer.MAX_VALUE);
 				item.setVelocity(new Vector(Utils.randomDouble(-0.6D, 0.6D), Utils.randomDouble(0.0D, 0.6D), Utils.randomDouble(-0.6D, 0.6D)));
 				items.add(item);

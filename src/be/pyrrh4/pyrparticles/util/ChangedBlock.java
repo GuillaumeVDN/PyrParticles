@@ -27,10 +27,11 @@ public class ChangedBlock {
 		return changed;
 	}
 
+	@SuppressWarnings("deprecation")
 	public void restore() {
 		for (Player pl : affected) {
 			if (pl.isOnline()) {
-				pl.sendBlockChange(block.getLocation(), block.getTypeId(), block.getData());
+				pl.sendBlockChange(block.getLocation(), block.getType(), block.getData());
 			}
 		}
 	}

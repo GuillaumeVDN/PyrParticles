@@ -1,6 +1,6 @@
 package be.pyrrh4.pyrparticles;
 
-import be.pyrrh4.core.PluginData;
+import be.pyrrh4.core.storage.PluginData;
 import be.pyrrh4.pyrparticles.particle.ParticleDisplayer;
 import be.pyrrh4.pyrparticles.particle.ParticleEffect;
 import be.pyrrh4.pyrparticles.trail.Trail;
@@ -28,6 +28,7 @@ public class PyrParticlesUser extends PluginData {
 
 	public void setParticleEffect(ParticleEffect particleEffect) {
 		this.particleEffect = particleEffect;
+		mustSave(true);
 	}
 
 	public ParticleDisplayer getParticleDisplayer() {
@@ -36,6 +37,7 @@ public class PyrParticlesUser extends PluginData {
 
 	public void setParticleDisplayer(ParticleDisplayer particleDisplayer) {
 		this.particleDisplayer = particleDisplayer;
+		mustSave(true);
 	}
 
 	public Trail getTrail() {
@@ -44,6 +46,7 @@ public class PyrParticlesUser extends PluginData {
 
 	public void setTrail(Trail trail) {
 		this.trail = trail;
+		mustSave(true);
 	}
 
 	public long getLastGadgetUsed() {
@@ -52,6 +55,7 @@ public class PyrParticlesUser extends PluginData {
 
 	public void setLastGadgetUsed(long lastGadgetUsed) {
 		this.lastGadgetUsed = lastGadgetUsed;
+		mustSave(true);
 	}
 
 }

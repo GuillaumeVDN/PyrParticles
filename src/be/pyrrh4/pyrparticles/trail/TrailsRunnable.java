@@ -1,11 +1,13 @@
 package be.pyrrh4.pyrparticles.trail;
 
+import java.util.ArrayList;
+
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
-import org.bukkit.material.MaterialData;
 
 import be.pyrrh4.core.User;
+import be.pyrrh4.core.material.Mat;
 import be.pyrrh4.core.util.Utils;
 import be.pyrrh4.pyrparticles.PyrParticles;
 import be.pyrrh4.pyrparticles.PyrParticlesUser;
@@ -22,22 +24,18 @@ public class TrailsRunnable implements Runnable {
 			if (data.getTrail() != null) {
 				// if world is allowed
 				if (PyrParticles.instance().getEnabledWorlds().isEmpty() || PyrParticles.instance().getEnabledWorlds().contains(player.getWorld().getName())) {
-					// check if trail can be used
+					// check if can apply trail
 					Trail trail = data.getTrail();
-					if (trail.canUse()) {
-						// check if can apply trail
-						Block block = trail.isUpperBlock() ? player.getLocation().getBlock() : player.getLocation().getBlock().getRelative(BlockFace.DOWN);
-						if (player.isOnGround() && (trail.isUpperBlock() ? block.getTypeId() == 0 && block.getRelative(BlockFace.DOWN).getType().isSolid() : block.getType().isSolid())) {
-							// remove previous blocks there first
-							PyrParticles.instance().removeTrailBlocksAt(block.getLocation());
-							// send block change
-							MaterialData next = trail.nextType();
-							for (Player pl : block.getWorld().getPlayers()) {
-								pl.sendBlockChange(block.getLocation(), next.getItemTypeId(), next.getData());
-							}
-							// add it to previous blocks so it'll be restored later
-							PyrParticles.instance().getTrailBlocks().add(new ChangedBlock(block, Utils.asList(block.getWorld().getPlayers())));
-						}
+					Block block = trail.isUpperBlock() ? player.getLocation().getBlock() : player.getLocation().getBlock().getRelative(BlockFace.DOWN);
+					if (player.isOnGround() && (trail.isUpperBlock() ? Mat.AIR.isMat(block) && block.getRelative(BlockFace.DOWN).getType().isSolid() : block.getType().isSolid())) {
+						// remove previous blocks there first
+						PyrParticles.instance().removeTrailBlocksAt(block.getLocation());
+						// send block change
+						Mat next = trail.nextType();
+						ArrayList<Player> affectedPlayers = Utils.asList(block.getWorld().getPlayers());
+						next.setBlockChange(block, affectedPlayers);
+						// add it to previous blocks so it'll be restored later
+						PyrParticles.instance().getTrailBlocks().add(new ChangedBlock(block, affectedPlayers));
 					}
 				}
 			}

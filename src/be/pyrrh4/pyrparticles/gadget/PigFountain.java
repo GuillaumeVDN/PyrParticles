@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Pig;
@@ -16,23 +15,18 @@ import org.bukkit.event.entity.EntityCombustEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.inventory.InventoryPickupItemEvent;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.material.MaterialData;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
-import be.pyrrh4.core.compat.sound.Sound;
-import be.pyrrh4.core.gui.GUI;
+import be.pyrrh4.core.material.Mat;
 import be.pyrrh4.core.util.Utils;
+import be.pyrrh4.core.versioncompat.sound.Sound;
 import be.pyrrh4.pyrparticles.PyrParticles;
 
 public class PigFountain extends AbstractGadget implements Listener {
 
 	// static fields
-	private static final ArrayList<ItemStack> itemsTypes = Utils.asList(
-			GUI.createItem(new MaterialData(Material.INK_SACK, (byte) 15)),
-			GUI.createItem(new MaterialData(Material.INK_SACK, (byte) 1))
-			);
+	private static final ArrayList<Mat> itemsTypes = Utils.asList(Mat.BONE_MEAL, Mat.ROSE_RED);
 
 	// fields and constructor
 	private ArrayList<Pig> pigs = new ArrayList<Pig>();
@@ -102,7 +96,7 @@ public class PigFountain extends AbstractGadget implements Listener {
 				Sound.NOTE_PLING.play(pig.getLocation());
 				// items
 				for (int i = 0; i < 25; i++) {
-					Item item = pig.getWorld().dropItem(pig.getLocation(), Utils.random(itemsTypes));
+					Item item = pig.getWorld().dropItem(pig.getLocation(), Utils.random(itemsTypes).getNewCurrentStack());
 					item.setPickupDelay(Integer.MAX_VALUE);
 					item.setVelocity(new Vector(Utils.randomDouble(-1.0D, 1.0D), Utils.randomDouble(0.0D, 1.0D), Utils.randomDouble(-1.0D, 1.0D)));
 					items.add(item);

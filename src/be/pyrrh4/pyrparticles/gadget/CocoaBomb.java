@@ -3,7 +3,6 @@ package be.pyrrh4.pyrparticles.gadget;
 import java.util.ArrayList;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
@@ -15,14 +14,15 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
-import be.pyrrh4.core.compat.sound.Sound;
+import be.pyrrh4.core.material.Mat;
 import be.pyrrh4.core.util.Utils;
+import be.pyrrh4.core.versioncompat.sound.Sound;
 import be.pyrrh4.pyrparticles.PyrParticles;
 
 public class CocoaBomb extends AbstractGadget implements Listener {
 
 	// static fields
-	private static final ItemStack cocoaItem = new ItemStack(351, 1, (short) 0, (byte) 3);
+	private static final ItemStack cocoaItem = Mat.COCOA_BEANS.getNewCurrentStack();
 
 	// fields and constructor
 	private Block bomb;
@@ -37,7 +37,7 @@ public class CocoaBomb extends AbstractGadget implements Listener {
 	public void start() {
 		// spawn bomb
 		bomb = player.getLocation().getBlock();
-		bomb.setTypeIdAndData(Material.WOOL.getId(), (byte) 12, false);
+		Mat.BROWN_WOOL.setBlock(bomb);
 		Sound.FIZZ.play(bomb.getLocation());
 		// start task
 		new BukkitRunnable() {
@@ -49,7 +49,7 @@ public class CocoaBomb extends AbstractGadget implements Listener {
 				remaining -= 7L;
 				if (remaining <= 0L) {
 					// explode bomb
-					bomb.setType(Material.AIR);
+					Mat.AIR.setBlock(bomb);
 					Sound.EXPLODE.play(bomb.getLocation());
 					for (int i = 0; i < 25; i++) {
 						Item item = bomb.getWorld().dropItem(bomb.getLocation(), cocoaItem);
@@ -71,9 +71,9 @@ public class CocoaBomb extends AbstractGadget implements Listener {
 				else {
 					// change bomb type
 					if (toggleType) {
-						bomb.setTypeIdAndData(Material.WOOL.getId(), (byte) 12, false);
+						Mat.BROWN_WOOL.setBlock(bomb);
 					} else {
-						bomb.setTypeIdAndData(Material.WOOL.getId(), (byte) 0, false);
+						Mat.WHITE_WOOL.setBlock(bomb);
 					}
 					toggleType = !toggleType;
 					// sound

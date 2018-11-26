@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -15,19 +14,18 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
 
 import be.pyrrh4.core.Core;
+import be.pyrrh4.core.Perm;
 import be.pyrrh4.core.PyrPlugin;
 import be.pyrrh4.core.User;
-import be.pyrrh4.core.command.Command;
-import be.pyrrh4.core.gui.GUI;
+import be.pyrrh4.core.command.CommandCall;
+import be.pyrrh4.core.command.CommandRoot;
+import be.pyrrh4.core.gui.ItemData;
+import be.pyrrh4.core.material.Mat;
+import be.pyrrh4.core.messenger.Locale;
 import be.pyrrh4.core.util.Utils;
 import be.pyrrh4.pyrparticles.commands.CommandGadget;
-import be.pyrrh4.pyrparticles.commands.CommandGadgetList;
 import be.pyrrh4.pyrparticles.commands.CommandParticle;
-import be.pyrrh4.pyrparticles.commands.CommandParticleList;
-import be.pyrrh4.pyrparticles.commands.CommandParticleRemove;
 import be.pyrrh4.pyrparticles.commands.CommandTrail;
-import be.pyrrh4.pyrparticles.commands.CommandTrailList;
-import be.pyrrh4.pyrparticles.commands.CommandTrailRemove;
 import be.pyrrh4.pyrparticles.gadget.AbstractGadget;
 import be.pyrrh4.pyrparticles.gadget.Gadget;
 import be.pyrrh4.pyrparticles.gui.MainGUI;
@@ -58,13 +56,13 @@ public class PyrParticles extends PyrPlugin implements Listener {
 	// misc
 	private ArrayList<Integer> tasksIds = new ArrayList<Integer>();
 	private MainGUI mainGUI;
-	private ItemStack hotbarItem;
+	private ItemData hotbarItem;
 
 	public MainGUI getMainGUI() {
 		return mainGUI;
 	}
 
-	public ItemStack getHotbarItem() {
+	public ItemData getHotbarItem() {
 		return hotbarItem;
 	}
 
@@ -172,34 +170,36 @@ public class PyrParticles extends PyrPlugin implements Listener {
 	// ----------------------------------------------------------------------
 
 	@Override
-	protected void initStorage() {}
+	protected void loadStorage() {
+	}
 
 	@Override
-	protected void savePluginData() {}
+	protected void saveStorage() {
+	}
 
 	@Override
-	protected void forceCloseUserPluginData() {
+	protected void closeUserData() {
 		for (User user : Core.instance().getUsers().values()) {
-			user.forceClosePluginData(PyrParticlesUser.class);
+			user.closePluginData(PyrParticlesUser.class);
 		}
 	}
 
 	// ----------------------------------------------------------------------
-	// Init
+	// Pre enable
 	// ----------------------------------------------------------------------
 
 	@Override
-	protected void init() {
-		getSettings().localeDefault("pyrparticles_en_US.yml");
-		getSettings().localeConfigName("locale");
+	protected boolean preEnable() {
+		this.spigotResourceId = 10225;
+		return true;
 	}
 
 	// ----------------------------------------------------------------------
-	// Override : reload
+	// Reload
 	// ----------------------------------------------------------------------
 
 	@Override
-	protected void innerReload() {
+	protected void reloadInner() {
 		// reset variables
 		particlesTicks = getConfiguration().getInt("settings.particles_ticks");
 		particlesAmount = getConfiguration().getInt("settings.particles_amount");
@@ -232,7 +232,7 @@ public class PyrParticles extends PyrPlugin implements Listener {
 		if (gadgetsCooldown < 1) gadgetsCooldown = -1;
 		enabledWorlds.clear();
 		enabledWorlds.addAll(getConfiguration().getList("settings.enabled_worlds"));
-		hotbarItem = GUI.createItem(Material.DIAMOND, 0, 1, getLocale().getMessage("hotbar_item_name").getLines().get(0), getLocale().getMessage("hotbar_item_lore").getLines());
+		hotbarItem = new ItemData("hotbar_item", -1, Mat.DIAMOND, 1, Locale.MISC_PYRPARTICLES_HOTBARITEMNAME.getActive().getLine(), Locale.MISC_PYRPARTICLES_HOTBARITEMLORE.getActive().getLines());
 
 		// eventually cancel tasks
 		for (int taskId : tasksIds) {
@@ -246,14 +246,14 @@ public class PyrParticles extends PyrPlugin implements Listener {
 
 		// eventually unregister GUI
 		if (mainGUI != null) {
-			mainGUI.unregister(false);
+			mainGUI.unregister();
 		}
 		mainGUI = new MainGUI();
 
 		// update items
 		if (hotbarItemSlot != -1) {
 			for (Player pl : Utils.getOnlinePlayers()) {
-				pl.getInventory().setItem(hotbarItemSlot, hotbarItem);
+				pl.getInventory().setItem(hotbarItemSlot, hotbarItem.getItemStack());
 				pl.updateInventory();
 			}
 		}
@@ -264,13 +264,24 @@ public class PyrParticles extends PyrPlugin implements Listener {
 	// ----------------------------------------------------------------------
 
 	@Override
-	protected void enable() {
+	protected boolean enable() {
 		// call reload
-		innerReload();
-		// registration
+		reloadInner();
+		// events
 		Bukkit.getPluginManager().registerEvents(this, this);
-		registerCommand(new Command(this, "pyrparticles", "pp", new CommandParticle(), new CommandParticleList(), new CommandParticleRemove(), new CommandTrail(), new CommandTrailList(), new CommandTrailRemove(),
-				new CommandGadget(), new CommandGadgetList()));
+		// commands
+		CommandRoot root = new CommandRoot(this, Utils.asList("pyrparticles", "pp"), null, null, true) {
+			@Override
+			protected void perform(CommandCall call) {
+				PyrParticles.instance().getMainGUI().open(call.getSenderAsPlayer());
+			}
+		};
+		registerCommand(root, Perm.PYRPARTICLES_ADMIN);
+		root.addChild(new CommandGadget());
+		root.addChild(new CommandParticle());
+		root.addChild(new CommandTrail());
+		// return
+		return true;
 	}
 
 	// ----------------------------------------------------------------------
@@ -304,7 +315,7 @@ public class PyrParticles extends PyrPlugin implements Listener {
 	public void event(PlayerJoinEvent event) {
 		Player player = event.getPlayer();
 		if (hotbarItemSlot != -1) {
-			player.getInventory().setItem(hotbarItemSlot, hotbarItem);
+			player.getInventory().setItem(hotbarItemSlot, hotbarItem.getItemStack());
 			player.updateInventory();
 		}
 	}
@@ -321,7 +332,7 @@ public class PyrParticles extends PyrPlugin implements Listener {
 	public void event(InventoryClickEvent event) {
 		if (hotbarItem.isSimilar(event.getCurrentItem())) {
 			event.setCancelled(true);
-			mainGUI.open(event.getWhoClicked(), false);
+			mainGUI.open((Player) event.getWhoClicked());
 			return;
 		}
 		Gadget gadget = Gadget.getGadgetFromItem(event.getCurrentItem());
@@ -335,7 +346,7 @@ public class PyrParticles extends PyrPlugin implements Listener {
 	public void event(PlayerInteractEvent event) {
 		if (hotbarItem.isSimilar(event.getItem())) {
 			event.setCancelled(true);
-			mainGUI.open(event.getPlayer(), false);
+			mainGUI.open(event.getPlayer());
 			return;
 		}
 		Gadget gadget = Gadget.getGadgetFromItem(event.getItem());

@@ -1,38 +1,31 @@
 package be.pyrrh4.pyrparticles.gadget;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Effect;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.material.MaterialData;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import be.pyrrh4.core.compat.particle.ParticleManager;
-import be.pyrrh4.core.compat.particle.ParticleManager.Type;
+import be.pyrrh4.core.material.Mat;
 import be.pyrrh4.core.util.Utils;
+import be.pyrrh4.core.versioncompat.particle.ParticleManager;
+import be.pyrrh4.core.versioncompat.particle.ParticleManager.Type;
 import be.pyrrh4.pyrparticles.PyrParticles;
-import be.pyrrh4.pyrparticles.util.RandomMaterial;
 
 public class DiscoBox extends AbstractGadget implements Listener {
-
-	// static fields
-	private static final RandomMaterial type = new RandomMaterial("STAINED_GLASS", 15);
-	private static final ArrayList<Material> records = Utils.asList(Material.GREEN_RECORD, Material.RECORD_3, Material.RECORD_4, Material.RECORD_5, Material.RECORD_8, Material.RECORD_9, Material.RECORD_12);
 
 	// fields and constructor
 	private Location location;
 	private Block lightBlock, jukeboxBlock;
-	private MaterialData lightBlockData, jukeboxBlockData;
-	private HashMap<Block, MaterialData> borders = new HashMap<Block, MaterialData>();
+	private Mat lightBlockMat, jukeboxBlockMat;
+	private HashMap<Block, Mat> borders = new HashMap<Block, Mat>();
 	private int taskId = -1;
 	private boolean toggleLight = false;
 
@@ -52,7 +45,7 @@ public class DiscoBox extends AbstractGadget implements Listener {
 			for (int z = -radius; z <= radius; z++) {
 				for (int y = 0; y <= 4; y++) {
 					Block block = location.clone().add(x, y, z).getBlock();
-					borders.put(block, new MaterialData(block.getType(), block.getData()));
+					borders.put(block, Mat.from(block));
 				}
 			}
 		}
@@ -60,7 +53,7 @@ public class DiscoBox extends AbstractGadget implements Listener {
 			for (int x = -radius; x <= radius; x++) {
 				for (int y = 0; y <= 4; y++) {
 					Block block = location.clone().add(x, y, z).getBlock();
-					borders.put(block, new MaterialData(block.getType(), block.getData()));
+					borders.put(block, Mat.from(block));
 				}
 			}
 		}
@@ -69,17 +62,17 @@ public class DiscoBox extends AbstractGadget implements Listener {
 				for (int z = -(radius - 1); z <= (radius - 1); z++) {
 					if (x == 0 && z == 0) continue;// don't add center top and bottom
 					Block block = location.clone().add(x, y, z).getBlock();
-					borders.put(block, new MaterialData(block.getType(), block.getData()));
+					borders.put(block, Mat.from(block));
 				}
 			}
 		}
 		// set misc
-		lightBlockData = new MaterialData(lightBlock.getType(), lightBlock.getData());
-		lightBlock.setType(Material.GLOWSTONE);
-		jukeboxBlockData = new MaterialData(jukeboxBlock.getType(), jukeboxBlock.getData());
-		jukeboxBlock.setType(Material.JUKEBOX);
+		lightBlockMat = Mat.from(lightBlock);
+		Mat.GLOWSTONE.setBlock(lightBlock);
+		jukeboxBlockMat= Mat.from(jukeboxBlock);
+		Mat.JUKEBOX.setBlock(jukeboxBlock);
 		// play disc
-		location.getWorld().playEffect(lightBlock.getLocation(), Effect.RECORD_PLAY, Utils.random(records).getId());
+		location.getWorld().playEffect(lightBlock.getLocation(), Effect.RECORD_PLAY, AbstractGadget.RANDOM_DISK.next());
 		// start task
 		taskId = new BukkitRunnable() {
 			private long end = System.currentTimeMillis() + (long) (getType().getDuration() * 1000);
@@ -107,11 +100,10 @@ public class DiscoBox extends AbstractGadget implements Listener {
 	public void stop() {
 		// delete blocks
 		for (Block block : borders.keySet()) {
-			MaterialData data = borders.get(block);
-			block.setTypeIdAndData(data.getItemTypeId(), data.getData(), false);
+			borders.get(block).setBlock(block);
 		}
-		lightBlock.setTypeIdAndData(lightBlockData.getItemTypeId(), lightBlockData.getData(), false);
-		jukeboxBlock.setTypeIdAndData(jukeboxBlockData.getItemTypeId(), jukeboxBlockData.getData(), false);
+		lightBlockMat.setBlock(lightBlock);
+		jukeboxBlockMat.setBlock(jukeboxBlock);
 		// stop music
 		location.getWorld().playEffect(lightBlock.getLocation(), Effect.RECORD_PLAY, 0);
 		// cancel task
@@ -126,15 +118,13 @@ public class DiscoBox extends AbstractGadget implements Listener {
 	private void updateBlocks() {
 		// borders
 		for (Block block : borders.keySet()) {
-			MaterialData next = type.next();
-			block.setTypeIdAndData(next.getItemTypeId(), next.getData(), false);
+			AbstractGadget.RANDOM_DISK.next().setBlock(block);
 		}
 		// light
 		if (toggleLight) {
-			lightBlock.setType(Material.GLOWSTONE);
+			Mat.GLOWSTONE.setBlock(lightBlock);
 		} else {
-			MaterialData next = type.next();
-			lightBlock.setTypeIdAndData(next.getItemTypeId(), next.getData(), false);
+			AbstractGadget.RANDOM_DISK.next().setBlock(lightBlock);
 		}
 		toggleLight = !toggleLight;
 	}

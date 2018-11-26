@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import org.bukkit.Bukkit;
 import org.bukkit.Effect;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.entity.Creeper;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -21,29 +20,21 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.EntityTargetEvent;
 import org.bukkit.event.inventory.InventoryPickupItemEvent;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.material.MaterialData;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
-import be.pyrrh4.core.compat.sound.Sound;
-import be.pyrrh4.core.gui.GUI;
+import be.pyrrh4.core.material.Mat;
 import be.pyrrh4.core.util.Utils;
+import be.pyrrh4.core.versioncompat.sound.Sound;
 import be.pyrrh4.pyrparticles.PyrParticles;
 
+@SuppressWarnings("deprecation")
 public class MobDance extends AbstractGadget implements Listener {
 
 	// static fields
-	private static final ArrayList<ItemStack> itemsTypes = Utils.asList(
-			GUI.createItem(new MaterialData(Material.INK_SACK, (byte) 15)),
-			GUI.createItem(new MaterialData(Material.INK_SACK, (byte) 1)),
-			GUI.createItem(new MaterialData(Material.MONSTER_EGG, (byte) 50)),
-			GUI.createItem(new MaterialData(Material.SKULL_ITEM, (byte) 2)),
-			GUI.createItem(new MaterialData(Material.CONCRETE_POWDER)),
-			GUI.createItem(new MaterialData(Material.BONE))
-			);
+	private static final ArrayList<Mat> itemsTypes = Utils.asList(Mat.BONE_MEAL, Mat.ROSE_RED, Mat.CREEPER_SPAWN_EGG, Mat.CREEPER_HEAD, Mat.GUNPOWDER, Mat.BONE);
 	private static final ArrayList<EntityType> mobTypes = Utils.asList(EntityType.CREEPER, EntityType.SKELETON, EntityType.ZOMBIE, EntityType.PIG_ZOMBIE, EntityType.VILLAGER);
-	private static final ArrayList<Material> records = Utils.asList(Material.RECORD_7, Material.RECORD_10);
+	private static final ArrayList<Mat> records = Utils.asList(Mat.MUSIC_DISC_CHIRP, Mat.MUSIC_DISC_MELLOHI);
 
 	// fields and constructor
 	private Location location;
@@ -72,7 +63,7 @@ public class MobDance extends AbstractGadget implements Listener {
 			mobs.add(mob);
 		}
 		// play disc
-		location.getWorld().playEffect(location, Effect.RECORD_PLAY, Utils.random(records).getId());
+		location.getWorld().playEffect(location, Effect.RECORD_PLAY, Utils.random(records).getCurrentMaterial().getId());
 		// start task
 		taskId = new BukkitRunnable() {
 			private long end = System.currentTimeMillis() + (long) (getType().getDuration() * 1000);
@@ -104,7 +95,7 @@ public class MobDance extends AbstractGadget implements Listener {
 				// items
 				if (Utils.random(1, 25) == 1) {
 					for (int i = 0; i < 25; i++) {
-						Item item = location.getWorld().dropItem(location, Utils.random(itemsTypes));
+						Item item = location.getWorld().dropItem(location, Utils.random(itemsTypes).getNewCurrentStack());
 						item.setPickupDelay(Integer.MAX_VALUE);
 						item.setVelocity(new Vector(Utils.randomDouble(-1.0D, 1.0D), Utils.randomDouble(0.0D, 1.0D), Utils.randomDouble(-1.0D, 1.0D)));
 						items.add(item);
@@ -187,7 +178,7 @@ public class MobDance extends AbstractGadget implements Listener {
 			Sound.EXPLODE.play(tnt.getLocation());
 			// items
 			for (int i = 0; i < 25; i++) {
-				Item item = tnt.getWorld().dropItem(tnt.getLocation(), Utils.random(itemsTypes));
+				Item item = tnt.getWorld().dropItem(tnt.getLocation(), Utils.random(itemsTypes).getNewCurrentStack());
 				item.setPickupDelay(Integer.MAX_VALUE);
 				item.setVelocity(new Vector(Utils.randomDouble(-1.0D, 1.0D), Utils.randomDouble(0.0D, 1.0D), Utils.randomDouble(-1.0D, 1.0D)));
 				items.add(item);

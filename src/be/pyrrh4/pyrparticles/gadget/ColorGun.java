@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
@@ -15,20 +14,18 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.material.MaterialData;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import be.pyrrh4.core.gui.GUI;
+import be.pyrrh4.core.gui.ItemData;
+import be.pyrrh4.core.material.Mat;
 import be.pyrrh4.core.util.Utils;
 import be.pyrrh4.pyrparticles.PyrParticles;
 import be.pyrrh4.pyrparticles.util.ChangedBlock;
-import be.pyrrh4.pyrparticles.util.RandomMaterial;
 
 public class ColorGun extends AbstractGadget implements Listener {
 
 	// static fields
-	private static final ItemStack gunItem = GUI.createItem(Material.GOLD_BARDING, 0, 1, "§6" + Utils.capitalizeFirstLetter(Gadget.COLOR_GUN.getName()), null);
-	private static final RandomMaterial type = new RandomMaterial("WOOL", 15), carpetType = new RandomMaterial("CARPET", 15);
+	private static final ItemData gunItem = new ItemData("color_gun", -1, Mat.GOLDEN_HORSE_ARMOR, 1, "§6" + Utils.capitalizeFirstLetter(Gadget.COLOR_GUN.getName()), null);
 
 	// fields and constructor
 	private ArrayList<Snowball> snowballs = new ArrayList<Snowball>();
@@ -43,7 +40,7 @@ public class ColorGun extends AbstractGadget implements Listener {
 	public void start() {
 		// give him the gun
 		previousItem = player.getInventory().getItem(PyrParticles.instance().getColorGunHotbarSlot());
-		player.getInventory().setItem(PyrParticles.instance().getColorGunHotbarSlot(), gunItem);
+		player.getInventory().setItem(PyrParticles.instance().getColorGunHotbarSlot(), gunItem.getItemStack());
 		player.updateInventory();
 		// register events
 		Bukkit.getPluginManager().registerEvents(this, PyrParticles.instance());
@@ -89,17 +86,15 @@ public class ColorGun extends AbstractGadget implements Listener {
 		if (snowballs.contains(proj)) {
 			snowballs.remove(proj);
 			Location location = proj.getLocation();
-			MaterialData typeNormal = type.next();
-			MaterialData typeCarpet = carpetType.next();
+			Mat typeNormal = AbstractGadget.RANDOM_WOOL.next();
+			Mat typeCarpet = AbstractGadget.RANDOM_CARPET.next();
 			for (Block block : Utils.getBlocksRound(location, PyrParticles.instance().getColorGunRadius()).keySet()) {
 				if (block.getType().isSolid()) {
 					// remove previous blocks there first
 					PyrParticles.instance().removeColorGunBlocksAt(block.getLocation());
 					// send block change
-					MaterialData next = block.getType().equals(Material.CARPET) ? typeCarpet : typeNormal;
-					for (Player pl : block.getWorld().getPlayers()) {
-						pl.sendBlockChange(block.getLocation(), next.getItemTypeId(), next.getData());
-					}
+					Mat next = block.getType().toString().contains("CARPET") ? typeCarpet : typeNormal;
+					next.setBlockChange(block, block.getWorld().getPlayers());
 					// add it to previous blocks so it'll be restored later
 					PyrParticles.instance().getColorGunBlocks().add(new ChangedBlock(block, Utils.asList(block.getWorld().getPlayers())));
 				}

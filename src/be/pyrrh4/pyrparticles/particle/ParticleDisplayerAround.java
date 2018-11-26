@@ -3,9 +3,9 @@ package be.pyrrh4.pyrparticles.particle;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
-import be.pyrrh4.core.compat.particle.ParticleManager;
-import be.pyrrh4.core.compat.particle.ParticleManager.Type;
 import be.pyrrh4.core.util.Utils;
+import be.pyrrh4.core.versioncompat.particle.ParticleManager;
+import be.pyrrh4.core.versioncompat.particle.ParticleManager.Type;
 import be.pyrrh4.pyrparticles.PyrParticles;
 import be.pyrrh4.pyrparticles.particle.ParticleDisplayer.AbstractParticleDisplayer;
 

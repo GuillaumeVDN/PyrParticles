@@ -3,7 +3,6 @@ package be.pyrrh4.pyrparticles.gadget;
 import java.util.ArrayList;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -13,6 +12,7 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import be.pyrrh4.core.User;
+import be.pyrrh4.core.material.Mat;
 import be.pyrrh4.core.util.Utils;
 import be.pyrrh4.pyrparticles.PyrParticles;
 import be.pyrrh4.pyrparticles.PyrParticlesUser;
@@ -42,7 +42,6 @@ public class Pyromaniac extends AbstractGadget implements Listener {
 		// change effect
 		data.setParticleEffect(ParticleEffect.MAGMA);
 		data.setTrail(null);
-		data.save();
 		// start task
 		taskId = new BukkitRunnable() {
 			private long end = System.currentTimeMillis() + (long) (getType().getDuration() * 1000);
@@ -66,7 +65,6 @@ public class Pyromaniac extends AbstractGadget implements Listener {
 		PyrParticlesUser data = User.from(player).getPluginData(PyrParticlesUser.class);
 		data.setParticleEffect(previousEffect);
 		data.setTrail(previousTrail);
-		data.save();
 		// reset blocks
 		for (ChangedBlock block : changedBlocks) {
 			block.restore();
@@ -89,9 +87,7 @@ public class Pyromaniac extends AbstractGadget implements Listener {
 		// change block
 		Block block = player.getLocation().getBlock();
 		ArrayList<Player> affected = Utils.asList(player.getWorld().getPlayers());
-		for (Player pl : affected) {
-			pl.sendBlockChange(block.getLocation(), Material.FIRE, (byte) 0);
-		}
+		Mat.FIRE.setBlockChange(player.getLocation().getBlock(), affected);
 		// save
 		changedBlocks.add(new ChangedBlock(block, affected));
 	}

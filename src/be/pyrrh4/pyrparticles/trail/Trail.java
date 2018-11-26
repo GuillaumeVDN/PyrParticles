@@ -2,79 +2,55 @@ package be.pyrrh4.pyrparticles.trail;
 
 import java.util.ArrayList;
 
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.material.MaterialData;
 
 import be.pyrrh4.core.User;
+import be.pyrrh4.core.material.Mat;
+import be.pyrrh4.core.messenger.Locale;
 import be.pyrrh4.core.util.Utils;
 import be.pyrrh4.pyrparticles.PyrParticles;
 import be.pyrrh4.pyrparticles.PyrParticlesUser;
-import be.pyrrh4.pyrparticles.util.RandomMaterial;
+import be.pyrrh4.pyrparticles.util.RandomMat;
 
 public enum Trail {
 
-	CARPET(true, Material.CARPET, 9, new RandomMaterial("CARPET", 15)),
-	WOOL(Material.WOOL, 10, new RandomMaterial("WOOL", 15)),
-	GLASS(Material.STAINED_GLASS, 1, new RandomMaterial("STAINED_GLASS", 15)),
-	CLAY(Material.STAINED_CLAY, 4, new RandomMaterial("STAINED_CLAY", 15)),
-	FROST(Material.SNOW_BLOCK, new RandomMaterial("SNOW_BLOCK", 0), new RandomMaterial("PACKED_ICE", 0)),
-	PODZOL(Material.DIRT, 2, new RandomMaterial("DIRT", 2)),
-	POLISHED(Material.STONE, 4, new RandomMaterial("STONE", 6)),
-	WOOD(Material.WOOD, new RandomMaterial("WOOD", 4), new RandomMaterial("LOG", 3)),
-	BEDROCK(Material.BEDROCK, new RandomMaterial("BEDROCK", 0)),
-	SEA(Material.SPONGE, new RandomMaterial("SPONGE", 0), new RandomMaterial("PRISMARINE", 0), new RandomMaterial("SEA_LANTERN", 0)),
-	RICHES(Material.GOLD_BLOCK, new RandomMaterial("GOLD_BLOCK", 0), new RandomMaterial("DIAMOND_BLOCK", 0), new RandomMaterial("LAPIS_BLOCK", 0), new RandomMaterial("REDSTONE_BLOCK", 0)),
-	MINE(Material.OBSIDIAN, new RandomMaterial("OBSIDIAN", 0), new RandomMaterial("COAL_BLOCK", 0)),
-	NETHER(Material.NETHERRACK, new RandomMaterial("NETHERRACK", 0), new RandomMaterial("NETHER_BRICK", 0)),
-	SANDSTONE(Material.SANDSTONE, new RandomMaterial("SANDSTONE", 0), new RandomMaterial("RED_SANDSTONE", 0));
+	CARPET(true, Mat.CYAN_CARPET, new RandomMat(Mat.WHITE_CARPET, Mat.BLACK_CARPET, Mat.BLUE_CARPET, Mat.BROWN_CARPET, Mat.CYAN_CARPET, Mat.GRAY_CARPET, Mat.GREEN_CARPET, Mat.LIGHT_BLUE_CARPET, Mat.LIGHT_GRAY_CARPET, Mat.LIME_CARPET, Mat.MAGENTA_CARPET, Mat.ORANGE_CARPET, Mat.PINK_CARPET, Mat.PURPLE_CARPET, Mat.RED_CARPET, Mat.YELLOW_CARPET)),
+	WOOL(Mat.PURPLE_WOOL, new RandomMat(Mat.WHITE_WOOL, Mat.BLACK_WOOL, Mat.BLUE_WOOL, Mat.BROWN_WOOL, Mat.CYAN_WOOL, Mat.GRAY_WOOL, Mat.GREEN_WOOL, Mat.LIGHT_BLUE_WOOL, Mat.LIGHT_GRAY_WOOL, Mat.LIME_WOOL, Mat.MAGENTA_WOOL, Mat.ORANGE_WOOL, Mat.PINK_WOOL, Mat.PURPLE_WOOL, Mat.RED_WOOL, Mat.YELLOW_WOOL)),
+	GLASS(Mat.ORANGE_STAINED_GLASS, new RandomMat(Mat.WHITE_STAINED_GLASS, Mat.BLACK_STAINED_GLASS, Mat.BLUE_STAINED_GLASS, Mat.BROWN_STAINED_GLASS, Mat.CYAN_STAINED_GLASS, Mat.GRAY_STAINED_GLASS, Mat.GREEN_STAINED_GLASS, Mat.LIGHT_BLUE_STAINED_GLASS, Mat.LIGHT_GRAY_STAINED_GLASS, Mat.LIME_STAINED_GLASS, Mat.MAGENTA_STAINED_GLASS, Mat.ORANGE_STAINED_GLASS, Mat.PINK_STAINED_GLASS, Mat.PURPLE_STAINED_GLASS, Mat.RED_STAINED_GLASS, Mat.YELLOW_STAINED_GLASS)),
+	CLAY(Mat.YELLOW_CONCRETE, new RandomMat(Mat.WHITE_CONCRETE, Mat.BLACK_CONCRETE, Mat.BLUE_CONCRETE, Mat.BROWN_CONCRETE, Mat.CYAN_CONCRETE, Mat.GRAY_CONCRETE, Mat.GREEN_CONCRETE, Mat.LIGHT_BLUE_CONCRETE, Mat.LIGHT_GRAY_CONCRETE, Mat.LIME_CONCRETE, Mat.MAGENTA_CONCRETE, Mat.ORANGE_CONCRETE, Mat.PINK_CONCRETE, Mat.PURPLE_CONCRETE, Mat.RED_CONCRETE, Mat.YELLOW_CONCRETE)),
+	FROST(Mat.SNOW_BLOCK, new RandomMat(Mat.PACKED_ICE)),
+	PODZOL(Mat.DIRT, new RandomMat(Mat.DIRT, Mat.COARSE_DIRT)),
+	POLISHED(Mat.STONE, new RandomMat(Mat.STONE, Mat.DIORITE, Mat.ANDESITE)),
+	WOOD(Mat.OAK_WOOD, new RandomMat(Mat.ACACIA_LOG, Mat.BIRCH_LOG, Mat.DARK_OAK_LOG, Mat.JUNGLE_LOG, Mat.OAK_LOG, Mat.SPRUCE_LOG)),
+	BEDROCK(Mat.BEDROCK, new RandomMat(Mat.BEDROCK)),
+	SEA(Mat.SPONGE, new RandomMat(Mat.SEA_LANTERN)),
+	RICHES(Mat.GOLD_BLOCK, new RandomMat(Mat.REDSTONE_BLOCK)),
+	MINE(Mat.OBSIDIAN, new RandomMat(Mat.COAL_BLOCK)),
+	NETHER(Mat.NETHERRACK, new RandomMat(Mat.NETHER_BRICK)),
+	SANDSTONE(Mat.SANDSTONE, new RandomMat(Mat.RED_SANDSTONE));
 
 	// constructor
-	private ArrayList<RandomMaterial> types;
+	private ArrayList<RandomMat> types;
 	private boolean upperBlock;
-	private Material guiItemType;
-	private int guiItemData;
+	private Mat guiItemType;
 
-	private Trail(Material guiItemType, RandomMaterial... types) {
-		this(false, guiItemType, 0, types);
+	private Trail(Mat guiItemType, RandomMat... types) {
+		this(false, guiItemType, types);
 	}
 
-	private Trail(boolean upperBlock, Material guiItemType, RandomMaterial... types) {
-		this(upperBlock, guiItemType, 0, types);
-	}
-
-	private Trail(Material guiItemType, int guiItemData, RandomMaterial... types) {
-		this(false, guiItemType, guiItemData, types);
-	}
-
-	private Trail(boolean upperBlock, Material guiItemType, int guiItemData, RandomMaterial... types) {
+	private Trail(boolean upperBlock, Mat guiItemType, RandomMat... types) {
 		this.upperBlock = upperBlock;
 		this.guiItemType = guiItemType;
-		this.guiItemData = guiItemData;
 		this.types = Utils.asList(types);
 	}
 
 	// getters
-
-	public boolean canUse() {
-		for (RandomMaterial type : types) {
-			if (type.exists()) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	public MaterialData nextType() {
+	public Mat nextType() {
 		return Utils.random(types).next();
 	}
 
-	public Material getGuiItemType() {
+	public Mat getGuiItemType() {
 		return guiItemType;
-	}
-
-	public int getGuiItemData() {
-		return guiItemData;
 	}
 
 	public boolean isUpperBlock() {
@@ -82,32 +58,30 @@ public enum Trail {
 	}
 
 	public String getName() {
-		return PyrParticles.instance().getLocale().getMessage("trail_" + toString().toLowerCase()).getLines().get(0);
+		return Utils.valueOfOrNull(Locale.class, "MISC_PYRPARTICLES_" + toString().toLowerCase()).getActive().getLine();
 	}
 
 	public boolean hasPermission(Player player) {
-		return player.isOp() || player.hasPermission("pp.trail.*") || player.hasPermission("pp.trail." + toString().toLowerCase());
+		return player.isOp() || player.hasPermission("pyrparticles.trail.*") || player.hasPermission("pyrparticles.trail." + toString().toLowerCase());
 	}
 
 	public void start(Player player) {
 		// permission
 		if (!hasPermission(player)) {
-			PyrParticles.instance().getLocale().getMessage("locked").send(player);
+			Locale.MSG_GENERIC_NOPERMISSION.getActive().send(player, "{plugin}", PyrParticles.instance().getName());
 			return;
 		}
 		// start
 		PyrParticlesUser data = User.from(player).getPluginData(PyrParticlesUser.class);
 		data.setTrail(this);
-		data.save();
-		PyrParticles.instance().getLocale().getMessage("trail_enable").send(player, "$TRAIL", getName());
+		Locale.MSG_PYRPARTICLES_TRAILENABLE.getActive().send(player, "{trail}", getName());
 	}
 
 	// stop
 	public static void stop(Player player) {
 		PyrParticlesUser data = User.from(player).getPluginData(PyrParticlesUser.class);
 		data.setTrail(null);
-		data.save();
-		PyrParticles.instance().getLocale().getMessage("trail_disable").send(player);
+		Locale.MSG_PYRPARTICLES_TRAILDISABLE.getActive().send(player);
 	}
 
 }
