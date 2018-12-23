@@ -15,7 +15,7 @@ public enum ParticleDisplayer {
 		try {
 			displayer = displayerClass.newInstance();
 		} catch (InstantiationException | IllegalAccessException exception) {
-			PyrParticles.instance().error("Could not initialize particle displayer " + displayerClass + " :");
+			PyrParticles.inst().error("Could not initialize particle displayer " + displayerClass + " :");
 			exception.printStackTrace();
 			displayer = null;
 		}

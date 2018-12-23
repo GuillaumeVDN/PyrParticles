@@ -1,6 +1,8 @@
 package be.pyrrh4.pyrparticles;
 
+import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -13,19 +15,18 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
 
-import be.pyrrh4.core.Core;
-import be.pyrrh4.core.Perm;
-import be.pyrrh4.core.PyrPlugin;
-import be.pyrrh4.core.User;
-import be.pyrrh4.core.command.CommandCall;
-import be.pyrrh4.core.command.CommandRoot;
-import be.pyrrh4.core.gui.ItemData;
-import be.pyrrh4.core.material.Mat;
-import be.pyrrh4.core.messenger.Locale;
-import be.pyrrh4.core.util.Utils;
+import be.pyrrh4.pyrcore.lib.PyrPlugin;
+import be.pyrrh4.pyrcore.lib.command.CommandCall;
+import be.pyrrh4.pyrcore.lib.command.CommandRoot;
+import be.pyrrh4.pyrcore.lib.configuration.YMLConfiguration;
+import be.pyrrh4.pyrcore.lib.data.DataManager.BackEnd;
+import be.pyrrh4.pyrcore.lib.gui.ItemData;
+import be.pyrrh4.pyrcore.lib.material.Mat;
+import be.pyrrh4.pyrcore.lib.util.Utils;
 import be.pyrrh4.pyrparticles.commands.CommandGadget;
 import be.pyrrh4.pyrparticles.commands.CommandParticle;
 import be.pyrrh4.pyrparticles.commands.CommandTrail;
+import be.pyrrh4.pyrparticles.data.PPDataManager;
 import be.pyrrh4.pyrparticles.gadget.AbstractGadget;
 import be.pyrrh4.pyrparticles.gadget.Gadget;
 import be.pyrrh4.pyrparticles.gui.MainGUI;
@@ -45,7 +46,7 @@ public class PyrParticles extends PyrPlugin implements Listener {
 		instance = this;
 	}
 
-	public static PyrParticles instance() {
+	public static PyrParticles inst() {
 		return instance;
 	}
 
@@ -54,7 +55,7 @@ public class PyrParticles extends PyrPlugin implements Listener {
 	// ----------------------------------------------------------------------
 
 	// misc
-	private ArrayList<Integer> tasksIds = new ArrayList<Integer>();
+	private List<Integer> tasksIds = new ArrayList<Integer>();
 	private MainGUI mainGUI;
 	private ItemData hotbarItem;
 
@@ -67,10 +68,10 @@ public class PyrParticles extends PyrPlugin implements Listener {
 	}
 
 	// tracking
-	private ArrayList<ChangedBlock> trailBlocks = new ArrayList<ChangedBlock>(), colorGunBlocks = new ArrayList<ChangedBlock>();
-	private ArrayList<AbstractGadget> runningGadgets = new ArrayList<AbstractGadget>();
+	private List<ChangedBlock> trailBlocks = new ArrayList<ChangedBlock>(), colorGunBlocks = new ArrayList<ChangedBlock>();
+	private List<AbstractGadget> runningGadgets = new ArrayList<AbstractGadget>();
 
-	public ArrayList<ChangedBlock> getTrailBlocks() {
+	public List<ChangedBlock> getTrailBlocks() {
 		return trailBlocks;
 	}
 
@@ -82,7 +83,7 @@ public class PyrParticles extends PyrPlugin implements Listener {
 		}
 	}
 
-	public ArrayList<ChangedBlock> getColorGunBlocks() {
+	public List<ChangedBlock> getColorGunBlocks() {
 		return trailBlocks;
 	}
 
@@ -94,7 +95,7 @@ public class PyrParticles extends PyrPlugin implements Listener {
 		}
 	}
 
-	public ArrayList<AbstractGadget> getRunningGadgets() {
+	public List<AbstractGadget> getRunningGadgets() {
 		return runningGadgets;
 	}
 
@@ -111,7 +112,7 @@ public class PyrParticles extends PyrPlugin implements Listener {
 	private int particlesAmount, trailsPersistence, colorGunHotbarSlot, colorGunPersistence, discoBoxRadius, hotbarItemSlot, hotbarGadgetSlot, gadgetsCooldown;
 	private long particlesTicks, trailsTicks, discoBoxTicks, discoSheepTicks, mobDanceTicks;
 	private double colorGunRadius;
-	private ArrayList<String> enabledWorlds = Utils.emptyList();
+	private List<String> enabledWorlds = Utils.emptyList();
 
 	public int getParticlesAmount() {
 		return particlesAmount;
@@ -161,60 +162,71 @@ public class PyrParticles extends PyrPlugin implements Listener {
 		return gadgetsCooldown;
 	}
 
-	public ArrayList<String> getEnabledWorlds() {
+	public List<String> getEnabledWorlds() {
 		return enabledWorlds;
 	}
 
-	// ----------------------------------------------------------------------
-	// Plugin data
-	// ----------------------------------------------------------------------
+	// ------------------------------------------------------------
+	// Data and configuration
+	// ------------------------------------------------------------
+
+	private PPDataManager dataManager = null;
+	private YMLConfiguration configuration = null;
 
 	@Override
-	protected void loadStorage() {
+	public YMLConfiguration getConfiguration() {
+		return configuration;
+	}
+
+	public PPDataManager getData() {
+		return dataManager;
 	}
 
 	@Override
-	protected void saveStorage() {
+	protected void unregisterData() {
+		dataManager.disable();
 	}
 
 	@Override
-	protected void closeUserData() {
-		for (User user : Core.instance().getUsers().values()) {
-			user.closePluginData(PyrParticlesUser.class);
-		}
+	public void resetData() {
+		dataManager.reset();
 	}
 
 	// ----------------------------------------------------------------------
-	// Pre enable
+	// Activation
 	// ----------------------------------------------------------------------
 
 	@Override
 	protected boolean preEnable() {
+		// spigot resource id
 		this.spigotResourceId = 10225;
+		// success
 		return true;
 	}
 
-	// ----------------------------------------------------------------------
-	// Reload
-	// ----------------------------------------------------------------------
-
 	@Override
-	protected void reloadInner() {
+	protected boolean innerReload() {
+		// configuration
+		this.configuration = new YMLConfiguration(this, new File(getDataFolder() + "/config.yml"), "config.yml", false, true);
+
+		// load locale file
+		reloadLocale(PPLocale.file);
+
 		// reset variables
-		particlesTicks = getConfiguration().getInt("settings.particles_ticks");
-		particlesAmount = getConfiguration().getInt("settings.particles_amount");
-		trailsTicks = getConfiguration().getInt("settings.trails_ticks");
-		trailsPersistence = getConfiguration().getInt("settings.trails_persistence");
-		colorGunHotbarSlot = getConfiguration().getInt("settings.hotbar_color_gun_item");
-		colorGunRadius = getConfiguration().getDouble("settings.color_gun_radius");
-		colorGunPersistence = getConfiguration().getInt("settings.color_gun_persistence");
-		discoBoxRadius = getConfiguration().getInt("settings.disco_box_radius");
-		discoBoxTicks = getConfiguration().getInt("settings.disco_box_ticks");
-		discoSheepTicks = getConfiguration().getInt("settings.disco_sheep_ticks");
-		mobDanceTicks = getConfiguration().getInt("settings.mob_dance_ticks");
-		hotbarItemSlot = getConfiguration().getInt("settings.hotbar_menu_item");
-		hotbarGadgetSlot = getConfiguration().getInt("settings.hotbar_gadget_item");
-		gadgetsCooldown = getConfiguration().getInt("settings.gadgets_cooldown");
+		particlesTicks = getConfiguration().getInt("settings.particles_ticks", 5);
+		particlesAmount = getConfiguration().getInt("settings.particles_amount", 2);
+		trailsTicks = getConfiguration().getInt("settings.trails_ticks", 4);
+		trailsPersistence = getConfiguration().getInt("settings.trails_persistence", 3);
+		colorGunHotbarSlot = getConfiguration().getInt("settings.hotbar_color_gun_item", 5);
+		colorGunRadius = getConfiguration().getDouble("settings.color_gun_radius", 3);
+		colorGunPersistence = getConfiguration().getInt("settings.color_gun_persistence", 3);
+		discoBoxRadius = getConfiguration().getInt("settings.disco_box_radius", 3);
+		discoBoxTicks = getConfiguration().getInt("settings.disco_box_ticks", 5);
+		discoSheepTicks = getConfiguration().getInt("settings.disco_sheep_ticks", 3);
+		mobDanceTicks = getConfiguration().getInt("settings.mob_dance_ticks", 1);
+		hotbarItemSlot = getConfiguration().getInt("settings.hotbar_menu_item", -1);
+		hotbarGadgetSlot = getConfiguration().getInt("settings.hotbar_gadget_item", -1);
+		gadgetsCooldown = getConfiguration().getInt("settings.gadgets_cooldown", 30);
 		if (particlesTicks < 1L) particlesTicks = 1L;
 		if (particlesAmount < 1) particlesAmount = 1;
 		if (trailsTicks < 1L) trailsTicks = 1L;
@@ -231,8 +243,8 @@ public class PyrParticles extends PyrPlugin implements Listener {
 		if (hotbarItemSlot == hotbarGadgetSlot) hotbarGadgetSlot = -1;
 		if (gadgetsCooldown < 1) gadgetsCooldown = -1;
 		enabledWorlds.clear();
-		enabledWorlds.addAll(getConfiguration().getList("settings.enabled_worlds"));
-		hotbarItem = new ItemData("hotbar_item", -1, Mat.DIAMOND, 1, Locale.MISC_PYRPARTICLES_HOTBARITEMNAME.getActive().getLine(), Locale.MISC_PYRPARTICLES_HOTBARITEMLORE.getActive().getLines());
+		enabledWorlds.addAll(getConfiguration().getList("settings.enabled_worlds", Utils.asList("world")));
+		hotbarItem = new ItemData("hotbar_item", -1, Mat.DIAMOND, 1, PPLocale.MISC_PYRPARTICLES_HOTBARITEMNAME.getLine(), PPLocale.MISC_PYRPARTICLES_HOTBARITEMLORE.getLines());
 
 		// eventually cancel tasks
 		for (int taskId : tasksIds) {
@@ -240,9 +252,9 @@ public class PyrParticles extends PyrPlugin implements Listener {
 		}
 
 		// register tasks
-		tasksIds.add(Bukkit.getScheduler().scheduleSyncRepeatingTask(this, new ParticlesRunnable(), 20L, particlesTicks));
-		tasksIds.add(Bukkit.getScheduler().scheduleSyncRepeatingTask(this, new TrailsRunnable(), 20L, trailsTicks));
-		tasksIds.add(Bukkit.getScheduler().scheduleSyncRepeatingTask(this, new MainRunnable(), 20L, 20L));
+		tasksIds.add(Bukkit.getScheduler().scheduleSyncRepeatingTask(this, new ParticlesRunnable(), 40L, particlesTicks));
+		tasksIds.add(Bukkit.getScheduler().scheduleSyncRepeatingTask(this, new TrailsRunnable(), 40L, trailsTicks));
+		tasksIds.add(Bukkit.getScheduler().scheduleSyncRepeatingTask(this, new MainRunnable(), 40L, 20L));
 
 		// eventually unregister GUI
 		if (mainGUI != null) {
@@ -257,6 +269,21 @@ public class PyrParticles extends PyrPlugin implements Listener {
 				pl.updateInventory();
 			}
 		}
+
+		// data manager
+		if (dataManager == null) {
+			BackEnd backend = getConfiguration().getEnumValue("data.backend", BackEnd.class, BackEnd.JSON);
+			if (backend == null) {
+				backend = BackEnd.JSON;
+			}
+			this.dataManager = new PPDataManager(backend);
+			dataManager.enable();
+		} else {
+			dataManager.synchronize();
+		}
+
+		// success
+		return true;
 	}
 
 	// ----------------------------------------------------------------------
@@ -266,20 +293,23 @@ public class PyrParticles extends PyrPlugin implements Listener {
 	@Override
 	protected boolean enable() {
 		// call reload
-		reloadInner();
+		innerReload();
+
 		// events
 		Bukkit.getPluginManager().registerEvents(this, this);
+
 		// commands
-		CommandRoot root = new CommandRoot(this, Utils.asList("pyrparticles", "pp"), null, null, true) {
+		CommandRoot root = new CommandRoot(this, Utils.asList("pyrparticles", "pp", "pparticles", "cosmetics"), null, null, true) {
 			@Override
 			protected void perform(CommandCall call) {
-				PyrParticles.instance().getMainGUI().open(call.getSenderAsPlayer());
+				PyrParticles.inst().getMainGUI().open(call.getSenderAsPlayer());
 			}
 		};
-		registerCommand(root, Perm.PYRPARTICLES_ADMIN);
+		registerCommand(root, PPPerm.PYRPARTICLES_ADMIN);
 		root.addChild(new CommandGadget());
 		root.addChild(new CommandParticle());
 		root.addChild(new CommandTrail());
+
 		// return
 		return true;
 	}

@@ -2,17 +2,19 @@ package be.pyrrh4.pyrparticles.gadget;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
+import java.util.Map;
 
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import be.pyrrh4.core.User;
-import be.pyrrh4.core.gui.ItemData;
-import be.pyrrh4.core.material.Mat;
-import be.pyrrh4.core.messenger.Locale;
-import be.pyrrh4.core.util.Utils;
+import be.pyrrh4.pyrcore.PCLocale;
+import be.pyrrh4.pyrcore.lib.gui.ItemData;
+import be.pyrrh4.pyrcore.lib.material.Mat;
+import be.pyrrh4.pyrcore.lib.messenger.Text;
+import be.pyrrh4.pyrcore.lib.util.Utils;
+import be.pyrrh4.pyrparticles.PPLocale;
 import be.pyrrh4.pyrparticles.PyrParticles;
-import be.pyrrh4.pyrparticles.PyrParticlesUser;
+import be.pyrrh4.pyrparticles.data.PPUser;
 
 // TODO : config, add the possibility to disable some particles/trails/gadgets
 public enum Gadget {
@@ -29,10 +31,13 @@ public enum Gadget {
 	// constructor
 	private Class<? extends AbstractGadget> gadgetClass;
 	private Mat guiItemType;
+	private String name;
 
 	private Gadget(Class<? extends AbstractGadget> gadgetClass, Mat guiItemType) {
 		this.gadgetClass = gadgetClass;
 		this.guiItemType = guiItemType;
+		Text text = Text.valueOf("MISC_PYRPARTICLES_GADGET" + name().replace("_", ""));
+		this.name = text == null ? name() : text.getLine();
 	}
 
 	// getters
@@ -41,11 +46,11 @@ public enum Gadget {
 	}
 
 	public String getName() {
-		return Utils.valueOfOrNull(Locale.class, "MISC_PYRPARTICLES_GADGET" + name().replace("_", "")).getActive().getLine();
+		return name;
 	}
 
 	public int getDuration() {
-		return PyrParticles.instance().getConfiguration().getInt("settings.gadget_duration." + name().toLowerCase(), -1);
+		return PyrParticles.inst().getConfiguration().getInt("settings.gadget_duration." + name().toLowerCase(), -1);
 	}
 
 	public boolean hasPermission(Player player) {
@@ -55,12 +60,12 @@ public enum Gadget {
 	public void startOrGiveItem(Player player) {
 		// permission
 		if (!hasPermission(player)) {
-			Locale.MSG_GENERIC_NOPERMISSION.getActive().send(player, "{plugin}", PyrParticles.instance().getName());
+			PCLocale.MSG_GENERIC_NOPERMISSION.send(player, "{plugin}", PyrParticles.inst().getName());
 			return;
 		}
 		// give in hotbar
-		if (PyrParticles.instance().getHotbarGadgetSlot() != -1) {
-			player.getInventory().setItem(PyrParticles.instance().getHotbarGadgetSlot(), gadgetsToItems.get(this));
+		if (PyrParticles.inst().getHotbarGadgetSlot() != -1) {
+			player.getInventory().setItem(PyrParticles.inst().getHotbarGadgetSlot(), gadgetsToItems.get(this));
 			player.updateInventory();
 		}
 		// execute it
@@ -71,21 +76,21 @@ public enum Gadget {
 
 	public void start(Player player) {
 		// delay
-		PyrParticlesUser data = User.from(player).getPluginData(PyrParticlesUser.class);
-		if (PyrParticles.instance().getGadgetsCooldown() != -1) {
-			long diff = System.currentTimeMillis() - data.getLastGadgetUsed(), cooldown = PyrParticles.instance().getGadgetsCooldown() * 1000;
+		PPUser user = PyrParticles.inst().getData().getUsers().getElement(player);
+		if (PyrParticles.inst().getGadgetsCooldown() != -1) {
+			long diff = System.currentTimeMillis() - user.getLastGadgetUsed(), cooldown = PyrParticles.inst().getGadgetsCooldown() * 1000;
 			if (diff < cooldown) {
-				Locale.MSG_GENERIC_COOLDOWN.getActive().send(player, "{time}", Utils.formatDurationMillis(cooldown - diff));
+				PCLocale.MSG_GENERIC_COOLDOWN.send(player, "{plugin}", PyrParticles.inst().getName(), "{time}", Utils.formatDurationMillis(cooldown - diff));
 				return;
 			}
 		}
-		data.setLastGadgetUsed(System.currentTimeMillis());
+		user.setLastGadgetUsed(System.currentTimeMillis());
 		// start
 		AbstractGadget gadg = createGadget(player);
 		if (gadg != null) {
-			Locale.MSG_PYRPARTICLES_GADGETENABLE.getActive().send(player, "{gadget}", getName());
+			PPLocale.MSG_PYRPARTICLES_GADGETENABLE.send(player, "{gadget}", getName());
 			gadg.start();
-			PyrParticles.instance().getRunningGadgets().add(gadg);
+			PyrParticles.inst().getRunningGadgets().add(gadg);
 		}
 	}
 
@@ -93,14 +98,14 @@ public enum Gadget {
 		try {
 			return gadgetClass.getConstructor(Player.class).newInstance(player);
 		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException exception) {
-			PyrParticles.instance().error("Could not initialize gadget " + gadgetClass + " :");
+			PyrParticles.inst().error("Could not initialize gadget " + gadgetClass + " :");
 			exception.printStackTrace();
 			return null;
 		}
 	}
 
 	// associate GUI items with gadgets
-	private static HashMap<Gadget, ItemStack> gadgetsToItems = new HashMap<Gadget, ItemStack>();
+	private static Map<Gadget, ItemStack> gadgetsToItems = new HashMap<Gadget, ItemStack>();
 
 	static {
 		for (Gadget gadget : Gadget.values()) {

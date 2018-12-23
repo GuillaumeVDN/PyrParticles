@@ -1,15 +1,16 @@
 package be.pyrrh4.pyrparticles.trail;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import org.bukkit.entity.Player;
 
-import be.pyrrh4.core.User;
-import be.pyrrh4.core.material.Mat;
-import be.pyrrh4.core.messenger.Locale;
-import be.pyrrh4.core.util.Utils;
+import be.pyrrh4.pyrcore.PCLocale;
+import be.pyrrh4.pyrcore.lib.material.Mat;
+import be.pyrrh4.pyrcore.lib.messenger.Text;
+import be.pyrrh4.pyrcore.lib.util.Utils;
+import be.pyrrh4.pyrparticles.PPLocale;
 import be.pyrrh4.pyrparticles.PyrParticles;
-import be.pyrrh4.pyrparticles.PyrParticlesUser;
+import be.pyrrh4.pyrparticles.data.PPUser;
 import be.pyrrh4.pyrparticles.util.RandomMat;
 
 public enum Trail {
@@ -30,9 +31,10 @@ public enum Trail {
 	SANDSTONE(Mat.SANDSTONE, new RandomMat(Mat.RED_SANDSTONE));
 
 	// constructor
-	private ArrayList<RandomMat> types;
+	private List<RandomMat> types;
 	private boolean upperBlock;
 	private Mat guiItemType;
+	private String name;
 
 	private Trail(Mat guiItemType, RandomMat... types) {
 		this(false, guiItemType, types);
@@ -42,6 +44,8 @@ public enum Trail {
 		this.upperBlock = upperBlock;
 		this.guiItemType = guiItemType;
 		this.types = Utils.asList(types);
+		Text text = Text.valueOf("MISC_PYRPARTICLES_TRAIL" + name().replace("_", ""));
+		this.name = text == null ? name() : text.getLine();
 	}
 
 	// getters
@@ -58,7 +62,7 @@ public enum Trail {
 	}
 
 	public String getName() {
-		return Utils.valueOfOrNull(Locale.class, "MISC_PYRPARTICLES_" + toString().toLowerCase()).getActive().getLine();
+		return name;
 	}
 
 	public boolean hasPermission(Player player) {
@@ -68,20 +72,20 @@ public enum Trail {
 	public void start(Player player) {
 		// permission
 		if (!hasPermission(player)) {
-			Locale.MSG_GENERIC_NOPERMISSION.getActive().send(player, "{plugin}", PyrParticles.instance().getName());
+			PCLocale.MSG_GENERIC_NOPERMISSION.send(player, "{plugin}", PyrParticles.inst().getName());
 			return;
 		}
 		// start
-		PyrParticlesUser data = User.from(player).getPluginData(PyrParticlesUser.class);
-		data.setTrail(this);
-		Locale.MSG_PYRPARTICLES_TRAILENABLE.getActive().send(player, "{trail}", getName());
+		PPUser user = PyrParticles.inst().getData().getUsers().getElement(player);
+		user.setTrail(this);
+		PPLocale.MSG_PYRPARTICLES_TRAILENABLE.send(player, "{trail}", getName());
 	}
 
 	// stop
 	public static void stop(Player player) {
-		PyrParticlesUser data = User.from(player).getPluginData(PyrParticlesUser.class);
-		data.setTrail(null);
-		Locale.MSG_PYRPARTICLES_TRAILDISABLE.getActive().send(player);
+		PPUser user = PyrParticles.inst().getData().getUsers().getElement(player);
+		user.setTrail(null);
+		PPLocale.MSG_PYRPARTICLES_TRAILDISABLE.send(player);
 	}
 
 }

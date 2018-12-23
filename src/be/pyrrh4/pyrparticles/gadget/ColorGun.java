@@ -1,6 +1,7 @@
 package be.pyrrh4.pyrparticles.gadget;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -16,9 +17,9 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import be.pyrrh4.core.gui.ItemData;
-import be.pyrrh4.core.material.Mat;
-import be.pyrrh4.core.util.Utils;
+import be.pyrrh4.pyrcore.lib.gui.ItemData;
+import be.pyrrh4.pyrcore.lib.material.Mat;
+import be.pyrrh4.pyrcore.lib.util.Utils;
 import be.pyrrh4.pyrparticles.PyrParticles;
 import be.pyrrh4.pyrparticles.util.ChangedBlock;
 
@@ -28,7 +29,7 @@ public class ColorGun extends AbstractGadget implements Listener {
 	private static final ItemData gunItem = new ItemData("color_gun", -1, Mat.GOLDEN_HORSE_ARMOR, 1, "§6" + Utils.capitalizeFirstLetter(Gadget.COLOR_GUN.getName()), null);
 
 	// fields and constructor
-	private ArrayList<Snowball> snowballs = new ArrayList<Snowball>();
+	private List<Snowball> snowballs = new ArrayList<Snowball>();
 	private ItemStack previousItem;
 
 	public ColorGun(Player player) {
@@ -39,18 +40,18 @@ public class ColorGun extends AbstractGadget implements Listener {
 	@Override
 	public void start() {
 		// give him the gun
-		previousItem = player.getInventory().getItem(PyrParticles.instance().getColorGunHotbarSlot());
-		player.getInventory().setItem(PyrParticles.instance().getColorGunHotbarSlot(), gunItem.getItemStack());
+		previousItem = player.getInventory().getItem(PyrParticles.inst().getColorGunHotbarSlot());
+		player.getInventory().setItem(PyrParticles.inst().getColorGunHotbarSlot(), gunItem.getItemStack());
 		player.updateInventory();
 		// register events
-		Bukkit.getPluginManager().registerEvents(this, PyrParticles.instance());
+		Bukkit.getPluginManager().registerEvents(this, PyrParticles.inst());
 		// create stop task
 		new BukkitRunnable() {
 			@Override
 			public void run() {
 				stop();
 			}
-		}.runTaskLater(PyrParticles.instance(), (long) (20 * getType().getDuration()));
+		}.runTaskLater(PyrParticles.inst(), (long) (20 * getType().getDuration()));
 	}
 
 	// stop
@@ -62,12 +63,12 @@ public class ColorGun extends AbstractGadget implements Listener {
 		}
 		snowballs.clear();
 		// reset item
-		player.getInventory().setItem(PyrParticles.instance().getColorGunHotbarSlot(), previousItem);
+		player.getInventory().setItem(PyrParticles.inst().getColorGunHotbarSlot(), previousItem);
 		player.updateInventory();
 		// unregister events
 		HandlerList.unregisterAll(this);
 		// unregister gadget
-		PyrParticles.instance().getRunningGadgets().remove(this);
+		PyrParticles.inst().getRunningGadgets().remove(this);
 	}
 
 	// events
@@ -88,15 +89,15 @@ public class ColorGun extends AbstractGadget implements Listener {
 			Location location = proj.getLocation();
 			Mat typeNormal = AbstractGadget.RANDOM_WOOL.next();
 			Mat typeCarpet = AbstractGadget.RANDOM_CARPET.next();
-			for (Block block : Utils.getBlocksRound(location, PyrParticles.instance().getColorGunRadius()).keySet()) {
+			for (Block block : Utils.getBlocksRound(location, PyrParticles.inst().getColorGunRadius()).keySet()) {
 				if (block.getType().isSolid()) {
 					// remove previous blocks there first
-					PyrParticles.instance().removeColorGunBlocksAt(block.getLocation());
+					PyrParticles.inst().removeColorGunBlocksAt(block.getLocation());
 					// send block change
 					Mat next = block.getType().toString().contains("CARPET") ? typeCarpet : typeNormal;
 					next.setBlockChange(block, block.getWorld().getPlayers());
 					// add it to previous blocks so it'll be restored later
-					PyrParticles.instance().getColorGunBlocks().add(new ChangedBlock(block, Utils.asList(block.getWorld().getPlayers())));
+					PyrParticles.inst().getColorGunBlocks().add(new ChangedBlock(block, Utils.asList(block.getWorld().getPlayers())));
 				}
 			}
 		}

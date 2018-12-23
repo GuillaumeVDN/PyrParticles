@@ -1,16 +1,17 @@
 package be.pyrrh4.pyrparticles.util;
 
 import java.util.ArrayList;
+import java.util.List;
 
-import be.pyrrh4.core.material.Mat;
-import be.pyrrh4.core.util.Utils;
+import be.pyrrh4.pyrcore.lib.material.Mat;
+import be.pyrrh4.pyrcore.lib.util.Utils;
 
 public class RandomMat {
 
 	// fields and constructor
-	private ArrayList<Mat> mats = new ArrayList<Mat>();
+	private List<Mat> mats = new ArrayList<Mat>();
 
-	public RandomMat(ArrayList<Mat> mats) {
+	public RandomMat(List<Mat> mats) {
 		this.mats = mats;
 	}
 

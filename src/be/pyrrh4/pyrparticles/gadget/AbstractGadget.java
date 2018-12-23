@@ -2,7 +2,7 @@ package be.pyrrh4.pyrparticles.gadget;
 
 import org.bukkit.entity.Player;
 
-import be.pyrrh4.core.material.Mat;
+import be.pyrrh4.pyrcore.lib.material.Mat;
 import be.pyrrh4.pyrparticles.util.RandomMat;
 
 public abstract class AbstractGadget {

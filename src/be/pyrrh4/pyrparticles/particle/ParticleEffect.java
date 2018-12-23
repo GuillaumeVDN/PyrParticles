@@ -1,22 +1,23 @@
 package be.pyrrh4.pyrparticles.particle;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import org.bukkit.entity.Player;
 
-import be.pyrrh4.core.User;
-import be.pyrrh4.core.material.Mat;
-import be.pyrrh4.core.messenger.Locale;
-import be.pyrrh4.core.util.Utils;
-import be.pyrrh4.core.versioncompat.particle.ParticleManager.Type;
+import be.pyrrh4.pyrcore.PCLocale;
+import be.pyrrh4.pyrcore.lib.material.Mat;
+import be.pyrrh4.pyrcore.lib.messenger.Text;
+import be.pyrrh4.pyrcore.lib.util.Utils;
+import be.pyrrh4.pyrcore.lib.versioncompat.particle.ParticleManager.Type;
+import be.pyrrh4.pyrparticles.PPLocale;
 import be.pyrrh4.pyrparticles.PyrParticles;
-import be.pyrrh4.pyrparticles.PyrParticlesUser;
+import be.pyrrh4.pyrparticles.data.PPUser;
 
 public enum ParticleEffect {
 
 	WATER(Type.DRIP_WATER, Mat.WATER_BUCKET),
 	BUBBLE(Type.WATER_BUBBLE, Mat.OAK_BOAT),
-	LAVA(Type.WATER_WAKE, Mat.LAVA_BUCKET),
+	LAVA(Type.DRIP_LAVA, Mat.LAVA_BUCKET),
 	MAGMA(Type.LAVA, Mat.BLAZE_POWDER),
 	FIRE(Type.FLAME, Mat.FIRE_CHARGE),
 	SMOKE(Type.SMOKE_NORMAL, Mat.FURNACE),
@@ -43,6 +44,7 @@ public enum ParticleEffect {
 	private double verticalCompensation;
 	private Mat guiItemType;
 	private int guiItemData;
+	private String name;
 
 	private ParticleEffect(Type particleType, Mat guiItemType) {
 		this(particleType, 0.0D, guiItemType);
@@ -61,6 +63,8 @@ public enum ParticleEffect {
 		this.verticalCompensation = verticalCompensation;
 		this.guiItemType = guiItemType;
 		this.guiItemData = guiItemData;
+		Text text = Text.valueOf("MISC_PYRPARTICLES_PARTICLE" + name().replace("_", ""));
+		this.name = text == null ? name() : text.getLine();
 	}
 
 	// methods
@@ -74,7 +78,7 @@ public enum ParticleEffect {
 
 	public Type getNextParticleType() {
 		if (particleType == null) {
-			ArrayList<ParticleEffect> values = Utils.asList(values());
+			List<ParticleEffect> values = Utils.asList(values());
 			for (int i = 0; i < 15; i++) {
 				ParticleEffect particleEffect = Utils.random(values);
 				if (particleEffect.getParticleType() != null) {
@@ -96,7 +100,7 @@ public enum ParticleEffect {
 	}
 
 	public String getName() {
-		return Utils.valueOfOrNull(Locale.class, "MISC_PYRPARTICLES_PARTICLE" + name().replace("_", "")).getActive().getLine();
+		return name;
 	}
 
 	public boolean hasPermission(Player player) {
@@ -106,20 +110,20 @@ public enum ParticleEffect {
 	public void start(Player player) {
 		// permission
 		if (!hasPermission(player)) {
-			Locale.MSG_GENERIC_NOPERMISSION.getActive().send(player, "{plugin}", PyrParticles.instance());
+			PCLocale.MSG_GENERIC_NOPERMISSION.send(player, "{plugin}", PyrParticles.inst());
 			return;
 		}
 		// start
-		PyrParticlesUser data = User.from(player).getPluginData(PyrParticlesUser.class);
-		data.setParticleEffect(this);
-		Locale.MSG_PYRPARTICLES_PARTICLEENABLE.getActive().send(player, "{particle}", getName());
+		PPUser user = PyrParticles.inst().getData().getUsers().getElement(player);
+		user.setParticleEffect(this);
+		PPLocale.MSG_PYRPARTICLES_PARTICLEENABLE.send(player, "{particle}", getName());
 	}
 
 	// stop
 	public static void stop(Player player) {
-		PyrParticlesUser data = User.from(player).getPluginData(PyrParticlesUser.class);
-		data.setParticleEffect(null);
-		Locale.MSG_PYRPARTICLES_PARTICLEDISABLE.getActive().send(player);
+		PPUser user = PyrParticles.inst().getData().getUsers().getElement(player);
+		user.setParticleEffect(null);
+		PPLocale.MSG_PYRPARTICLES_PARTICLEDISABLE.send(player);
 	}
 
 }

@@ -3,9 +3,9 @@ package be.pyrrh4.pyrparticles.particle;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
-import be.pyrrh4.core.util.Utils;
-import be.pyrrh4.core.versioncompat.particle.ParticleManager;
-import be.pyrrh4.core.versioncompat.particle.ParticleManager.Type;
+import be.pyrrh4.pyrcore.lib.util.Utils;
+import be.pyrrh4.pyrcore.lib.versioncompat.particle.ParticleManager;
+import be.pyrrh4.pyrcore.lib.versioncompat.particle.ParticleManager.Type;
 import be.pyrrh4.pyrparticles.PyrParticles;
 import be.pyrrh4.pyrparticles.particle.ParticleDisplayer.AbstractParticleDisplayer;
 
@@ -15,7 +15,7 @@ public class ParticleDisplayerAround implements AbstractParticleDisplayer {
 
 	@Override
 	public void display(Player player, ParticleEffect particleEffect) {
-		for (int i = 0; i < PyrParticles.instance().getParticlesAmount(); i++) {
+		for (int i = 0; i < PyrParticles.inst().getParticlesAmount(); i++) {
 			Location loc = player.getLocation().clone();
 			// idk why the following but it was like that in the previous versions
 			double x = Math.cos(Utils.random(1, 360)) * (Utils.random(1, RANGE));

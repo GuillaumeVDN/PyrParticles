@@ -1,6 +1,7 @@
 package be.pyrrh4.pyrparticles.gadget;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Effect;
@@ -13,10 +14,10 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import be.pyrrh4.core.material.Mat;
-import be.pyrrh4.core.util.Utils;
-import be.pyrrh4.core.versioncompat.particle.ParticleManager;
-import be.pyrrh4.core.versioncompat.particle.ParticleManager.Type;
+import be.pyrrh4.pyrcore.lib.material.Mat;
+import be.pyrrh4.pyrcore.lib.util.Utils;
+import be.pyrrh4.pyrcore.lib.versioncompat.particle.ParticleManager;
+import be.pyrrh4.pyrcore.lib.versioncompat.particle.ParticleManager.Type;
 import be.pyrrh4.pyrparticles.PyrParticles;
 
 public class DiscoBox extends AbstractGadget implements Listener {
@@ -25,7 +26,7 @@ public class DiscoBox extends AbstractGadget implements Listener {
 	private Location location;
 	private Block lightBlock, jukeboxBlock;
 	private Mat lightBlockMat, jukeboxBlockMat;
-	private HashMap<Block, Mat> borders = new HashMap<Block, Mat>();
+	private Map<Block, Mat> borders = new HashMap<Block, Mat>();
 	private int taskId = -1;
 	private boolean toggleLight = false;
 
@@ -40,7 +41,7 @@ public class DiscoBox extends AbstractGadget implements Listener {
 		location = player.getLocation().clone().subtract(0, 1, 0);
 		lightBlock = location.clone().add(0, 4, 0).getBlock();
 		jukeboxBlock = location.getBlock();
-		final int radius = PyrParticles.instance().getDiscoBoxRadius();
+		final int radius = PyrParticles.inst().getDiscoBoxRadius();
 		for (int x : Utils.asList(radius, -radius)) {
 			for (int z = -radius; z <= radius; z++) {
 				for (int y = 0; y <= 4; y++) {
@@ -90,9 +91,9 @@ public class DiscoBox extends AbstractGadget implements Listener {
 					ParticleManager.INSTANCE.sendColor(Type.SPELL_MOB, location.clone().add(Utils.randomDouble(-radius, radius), Utils.randomDouble(0.0D, 4.0D), Utils.randomDouble(-radius, radius)), 1.0F, 1, Utils.getRandomBukkitColor(), Utils.asList(location.getWorld().getPlayers()));
 				}
 			}
-		}.runTaskTimer(PyrParticles.instance(), 0L, PyrParticles.instance().getDiscoBoxTicks()).getTaskId();
+		}.runTaskTimer(PyrParticles.inst(), 0L, PyrParticles.inst().getDiscoBoxTicks()).getTaskId();
 		// register listeners
-		Bukkit.getPluginManager().registerEvents(this, PyrParticles.instance());
+		Bukkit.getPluginManager().registerEvents(this, PyrParticles.inst());
 	}
 
 	// stop
@@ -109,7 +110,7 @@ public class DiscoBox extends AbstractGadget implements Listener {
 		// cancel task
 		Bukkit.getScheduler().cancelTask(taskId);
 		// unregister gadget
-		PyrParticles.instance().getRunningGadgets().remove(this);
+		PyrParticles.inst().getRunningGadgets().remove(this);
 		// unregister events
 		HandlerList.unregisterAll(this);
 	}

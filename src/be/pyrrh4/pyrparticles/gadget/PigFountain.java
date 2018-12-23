@@ -1,6 +1,7 @@
 package be.pyrrh4.pyrparticles.gadget;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -18,19 +19,19 @@ import org.bukkit.event.inventory.InventoryPickupItemEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
-import be.pyrrh4.core.material.Mat;
-import be.pyrrh4.core.util.Utils;
-import be.pyrrh4.core.versioncompat.sound.Sound;
+import be.pyrrh4.pyrcore.lib.material.Mat;
+import be.pyrrh4.pyrcore.lib.util.Utils;
+import be.pyrrh4.pyrcore.lib.versioncompat.sound.Sound;
 import be.pyrrh4.pyrparticles.PyrParticles;
 
 public class PigFountain extends AbstractGadget implements Listener {
 
 	// static fields
-	private static final ArrayList<Mat> itemsTypes = Utils.asList(Mat.BONE_MEAL, Mat.ROSE_RED);
+	private static final List<Mat> itemsTypes = Utils.asList(Mat.BONE_MEAL, Mat.ROSE_RED);
 
 	// fields and constructor
-	private ArrayList<Pig> pigs = new ArrayList<Pig>();
-	private ArrayList<Item> items = new ArrayList<Item>();
+	private List<Pig> pigs = new ArrayList<Pig>();
+	private List<Item> items = new ArrayList<Item>();
 	private Location location;
 	private int taskId;
 
@@ -59,9 +60,9 @@ public class PigFountain extends AbstractGadget implements Listener {
 				// sound
 				Sound.PIG_IDLE.play(location);
 			}
-		}.runTaskTimer(PyrParticles.instance(), 0L, 20L).getTaskId();
+		}.runTaskTimer(PyrParticles.inst(), 0L, 20L).getTaskId();
 		// register events
-		Bukkit.getPluginManager().registerEvents(this, PyrParticles.instance());
+		Bukkit.getPluginManager().registerEvents(this, PyrParticles.inst());
 	}
 
 	// stop
@@ -82,7 +83,7 @@ public class PigFountain extends AbstractGadget implements Listener {
 		// unregister events
 		HandlerList.unregisterAll(this);
 		// unregister gadget
-		PyrParticles.instance().getRunningGadgets().remove(this);
+		PyrParticles.inst().getRunningGadgets().remove(this);
 	}
 
 	// events

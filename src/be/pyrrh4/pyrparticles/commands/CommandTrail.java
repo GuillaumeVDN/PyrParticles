@@ -1,25 +1,25 @@
 package be.pyrrh4.pyrparticles.commands;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import be.pyrrh4.core.Perm;
-import be.pyrrh4.core.command.CommandArgument;
-import be.pyrrh4.core.command.CommandCall;
-import be.pyrrh4.core.command.Param;
-import be.pyrrh4.core.command.ParamParser;
-import be.pyrrh4.core.messenger.Locale;
-import be.pyrrh4.core.util.Utils;
+import be.pyrrh4.pyrcore.lib.command.CommandArgument;
+import be.pyrrh4.pyrcore.lib.command.CommandCall;
+import be.pyrrh4.pyrcore.lib.command.Param;
+import be.pyrrh4.pyrcore.lib.command.ParamParser;
+import be.pyrrh4.pyrcore.lib.util.Utils;
+import be.pyrrh4.pyrparticles.PPLocale;
+import be.pyrrh4.pyrparticles.PPPerm;
 import be.pyrrh4.pyrparticles.PyrParticles;
 import be.pyrrh4.pyrparticles.trail.Trail;
 
 public class CommandTrail extends CommandArgument {
 
-	private static final Param paramList = new Param(Utils.asList("list", "l"), null, Perm.PYRPARTICLES_COMMAND_TRAIL, true);
-	private static final Param paramStop = new Param(Utils.asList("stop", "cancel"), null, Perm.PYRPARTICLES_COMMAND_TRAIL, true);
-	private static final Param paramTrail = new Param(Utils.asList("trail", "t"), "id", Perm.PYRPARTICLES_COMMAND_TRAIL, true);
+	private static final Param paramList = new Param(Utils.asList("list", "l"), null, PPPerm.PYRPARTICLES_COMMAND_TRAIL, true);
+	private static final Param paramStop = new Param(Utils.asList("stop", "cancel"), null, PPPerm.PYRPARTICLES_COMMAND_TRAIL, true);
+	private static final Param paramTrail = new Param(Utils.asList("trail", "t"), "id", PPPerm.PYRPARTICLES_COMMAND_TRAIL, true);
 	private String list = "";
 
 	static {
@@ -34,9 +34,9 @@ public class CommandTrail extends CommandArgument {
 	}
 
 	public CommandTrail() {
-		super(PyrParticles.instance(), Utils.asList("trail"), "trail manipulation", Perm.PYRPARTICLES_COMMAND_TRAIL, true, paramList, paramStop, paramTrail);
+		super(PyrParticles.inst(), Utils.asList("trail"), "trail manipulation", PPPerm.PYRPARTICLES_COMMAND_TRAIL, true, paramList, paramStop, paramTrail);
 		// initialize list
-		ArrayList<String> trails = Utils.emptyList();
+		List<String> trails = Utils.emptyList();
 		for (Trail effect : Trail.values()) {
 			trails.add(effect.toString().toLowerCase());
 		}
@@ -48,7 +48,7 @@ public class CommandTrail extends CommandArgument {
 		Player player = call.getSenderAsPlayer();
 		// list
 		if (paramList.has(call)) {
-			Locale.MSG_PYRPARTICLES_TRAILLIST.getActive().send(call.getSender(), "{list}", list);
+			PPLocale.MSG_PYRPARTICLES_TRAILLIST.send(call.getSender(), "{list}", list);
 		}
 		// stop
 		else if (paramStop.has(call)) {
@@ -73,7 +73,7 @@ public class CommandTrail extends CommandArgument {
 			// unknown trail
 			Trail effect = Utils.valueOfOrNull(Trail.class, value.toUpperCase());
 			if (effect == null) {
-				Locale.MSG_PYRPARTICLES_INVALIDTRAILPARAM.getActive().send(sender, "{parameter}", parameter.toString(), "{value}", value);
+				PPLocale.MSG_PYRPARTICLES_INVALIDTRAILPARAM.send(sender, "{parameter}", parameter.toString(), "{value}", value);
 				return null;
 			}
 			// found trail

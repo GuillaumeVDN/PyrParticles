@@ -1,6 +1,7 @@
 package be.pyrrh4.pyrparticles.gadget;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
@@ -14,9 +15,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
-import be.pyrrh4.core.material.Mat;
-import be.pyrrh4.core.util.Utils;
-import be.pyrrh4.core.versioncompat.sound.Sound;
+import be.pyrrh4.pyrcore.lib.material.Mat;
+import be.pyrrh4.pyrcore.lib.util.Utils;
+import be.pyrrh4.pyrcore.lib.versioncompat.sound.Sound;
 import be.pyrrh4.pyrparticles.PyrParticles;
 
 public class CocoaBomb extends AbstractGadget implements Listener {
@@ -26,7 +27,7 @@ public class CocoaBomb extends AbstractGadget implements Listener {
 
 	// fields and constructor
 	private Block bomb;
-	private ArrayList<Item> items = new ArrayList<Item>();
+	private List<Item> items = new ArrayList<Item>();
 
 	public CocoaBomb(Player player) {
 		super(Gadget.COCOA_BOMB, player);
@@ -63,7 +64,7 @@ public class CocoaBomb extends AbstractGadget implements Listener {
 						public void run() {
 							stop();
 						}
-					}.runTaskLater(PyrParticles.instance(), 20L * 5L);
+					}.runTaskLater(PyrParticles.inst(), 20L * 5L);
 					// cancel
 					cancel();
 				}
@@ -80,9 +81,9 @@ public class CocoaBomb extends AbstractGadget implements Listener {
 					Sound.NOTE_STICKS.play(bomb.getLocation());
 				}
 			}
-		}.runTaskTimer(PyrParticles.instance(), 7L, 7L);
+		}.runTaskTimer(PyrParticles.inst(), 7L, 7L);
 		// register events
-		Bukkit.getPluginManager().registerEvents(this, PyrParticles.instance());
+		Bukkit.getPluginManager().registerEvents(this, PyrParticles.inst());
 	}
 
 	// stop
@@ -96,7 +97,7 @@ public class CocoaBomb extends AbstractGadget implements Listener {
 		// unregister events
 		HandlerList.unregisterAll(this);
 		// unregister gadget
-		PyrParticles.instance().getRunningGadgets().remove(this);
+		PyrParticles.inst().getRunningGadgets().remove(this);
 	}
 
 	// events

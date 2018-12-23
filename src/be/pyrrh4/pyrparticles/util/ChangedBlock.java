@@ -1,6 +1,6 @@
 package be.pyrrh4.pyrparticles.util;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -9,10 +9,10 @@ public class ChangedBlock {
 
 	// fields and constructor
 	private Block block;
-	private ArrayList<Player> affected;
+	private List<Player> affected;
 	private long changed;
 
-	public ChangedBlock(Block block, ArrayList<Player> affected) {
+	public ChangedBlock(Block block, List<Player> affected) {
 		this.block = block;
 		this.affected = affected;
 		this.changed = System.currentTimeMillis();

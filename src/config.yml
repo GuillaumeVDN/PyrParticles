@@ -2,8 +2,22 @@
 # Configuration file for PyrParticles
 #----------------------------------------------------------------------------------------------------
 
-# Settings
+# Data management
+data:
+  # Back end (JSON, MYSQL) (default JSON)
+  # If you enable MySQL here, you should definitely enable it for PyrCore as well
+  backend: JSON
+  # Synchronization delay (in seconds) (disable with -1) (default 300)
+  # If this is enabled, the plugin will check the stored data (files/database), and if there's new/different data there, cached data will be overriden
+  sync_delay: -1
+  # MySQL identifiers (if backend is MYSQL)
+#  mysql:
+#    host: mysql.myserver.com
+#    name: mydatabase
+#    user: username
+#    pass: pwd
 
+# Settings
 settings:
 
   # Emplacement of the hotbar menu item (0 - 8, set to -1 to disable)

@@ -1,6 +1,7 @@
 package be.pyrrh4.pyrparticles.gadget;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.EntityType;
@@ -16,15 +17,15 @@ import org.bukkit.event.inventory.InventoryPickupItemEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
-import be.pyrrh4.core.util.Utils;
-import be.pyrrh4.core.versioncompat.sound.Sound;
+import be.pyrrh4.pyrcore.lib.util.Utils;
+import be.pyrrh4.pyrcore.lib.versioncompat.sound.Sound;
 import be.pyrrh4.pyrparticles.PyrParticles;
 
 public class DiscoSheep extends AbstractGadget implements Listener {
 
 	// fields and constructor
 	private Sheep sheep;
-	private ArrayList<Item> items = new ArrayList<Item>();
+	private List<Item> items = new ArrayList<Item>();
 	private int taskId;
 
 	public DiscoSheep(Player player) {
@@ -56,9 +57,9 @@ public class DiscoSheep extends AbstractGadget implements Listener {
 				// sound
 				Sound.NOTE_BASS_DRUM.play(sheep.getLocation());
 			}
-		}.runTaskTimer(PyrParticles.instance(), 0L, PyrParticles.instance().getDiscoSheepTicks()).getTaskId();
+		}.runTaskTimer(PyrParticles.inst(), 0L, PyrParticles.inst().getDiscoSheepTicks()).getTaskId();
 		// register events
-		Bukkit.getPluginManager().registerEvents(this, PyrParticles.instance());
+		Bukkit.getPluginManager().registerEvents(this, PyrParticles.inst());
 	}
 
 	// stop
@@ -76,7 +77,7 @@ public class DiscoSheep extends AbstractGadget implements Listener {
 		// unregister events
 		HandlerList.unregisterAll(this);
 		// unregister gadget
-		PyrParticles.instance().getRunningGadgets().remove(this);
+		PyrParticles.inst().getRunningGadgets().remove(this);
 	}
 
 	// events

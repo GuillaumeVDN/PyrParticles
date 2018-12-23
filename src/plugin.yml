@@ -4,14 +4,14 @@ description: 'An awesome cosmetics plugin with particles, trails and gadgets ! (
 author: PYRRH4
 website: www.pyrrh4.be
 # Techy
-version: 4.0.9
+version: 5.0.0-BETA
 api-version: 1.13
 main: be.pyrrh4.pyrparticles.PyrParticles
 depend: [PyrCore]
 # Commands
 commands:
   pyrparticles:
-    aliases: [pparticles, pp]
+    aliases: [pparticles, pp, cosmetics]
     description: Cosmetics
 # Permissions
 permissions:
