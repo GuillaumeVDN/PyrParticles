@@ -73,7 +73,12 @@ public class DiscoBox extends AbstractGadget implements Listener {
 		jukeboxBlockMat= Mat.from(jukeboxBlock);
 		Mat.JUKEBOX.setBlock(jukeboxBlock);
 		// play disc
-		location.getWorld().playEffect(lightBlock.getLocation(), Effect.RECORD_PLAY, AbstractGadget.RANDOM_DISK.next());
+		try {
+			location.getWorld().playEffect(lightBlock.getLocation(), Effect.RECORD_PLAY, AbstractGadget.RANDOM_DISK.next().getCurrentMaterial());
+		} catch (Throwable exception) {
+			exception.printStackTrace();
+			PyrParticles.inst().error("Couldn't play music for gadget disco box");
+		}
 		// start task
 		taskId = new BukkitRunnable() {
 			private long end = System.currentTimeMillis() + (long) (getType().getDuration() * 1000);
@@ -88,7 +93,7 @@ public class DiscoBox extends AbstractGadget implements Listener {
 				updateBlocks();
 				// particles
 				for (int i = 0; i < 15; i++) {
-					ParticleManager.INSTANCE.sendColor(Type.SPELL_MOB, location.clone().add(Utils.randomDouble(-radius, radius), Utils.randomDouble(0.0D, 4.0D), Utils.randomDouble(-radius, radius)), 1.0F, 1, Utils.getRandomBukkitColor(), Utils.asList(location.getWorld().getPlayers()));
+					ParticleManager.INSTANCE.sendColor(Type.REDSTONE, location.clone().add(Utils.randomDouble(-radius, radius), Utils.randomDouble(0.0D, 4.0D), Utils.randomDouble(-radius, radius)), 1.0F, 1, Utils.getRandomBukkitColor(), Utils.asList(location.getWorld().getPlayers()));
 				}
 			}
 		}.runTaskTimer(PyrParticles.inst(), 0L, PyrParticles.inst().getDiscoBoxTicks()).getTaskId();
@@ -119,13 +124,13 @@ public class DiscoBox extends AbstractGadget implements Listener {
 	private void updateBlocks() {
 		// borders
 		for (Block block : borders.keySet()) {
-			AbstractGadget.RANDOM_DISK.next().setBlock(block);
+			AbstractGadget.RANDOM_STAINED_GLASS.next().setBlock(block);
 		}
 		// light
 		if (toggleLight) {
 			Mat.GLOWSTONE.setBlock(lightBlock);
 		} else {
-			AbstractGadget.RANDOM_DISK.next().setBlock(lightBlock);
+			AbstractGadget.RANDOM_STAINED_GLASS.next().setBlock(lightBlock);
 		}
 		toggleLight = !toggleLight;
 	}

@@ -37,7 +37,7 @@ public class TrailsGUI extends GUI {
 		setPersistentItem(new ClickeableItem(MainGUI.ITEM_PREVIOUS) {
 			@Override
 			public boolean onClick(Player player, ClickType clickType, GUI gui, int pageIndex) {
-				PyrParticles.inst().getMainGUI().open(player);
+				new MainGUI().open(player);
 				return true;
 			}
 		});

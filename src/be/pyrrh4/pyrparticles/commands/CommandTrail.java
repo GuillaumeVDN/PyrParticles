@@ -17,9 +17,9 @@ import be.pyrrh4.pyrparticles.trail.Trail;
 
 public class CommandTrail extends CommandArgument {
 
-	private static final Param paramList = new Param(Utils.asList("list", "l"), null, PPPerm.PYRPARTICLES_COMMAND_TRAIL, true);
-	private static final Param paramStop = new Param(Utils.asList("stop", "cancel"), null, PPPerm.PYRPARTICLES_COMMAND_TRAIL, true);
-	private static final Param paramTrail = new Param(Utils.asList("trail", "t"), "id", PPPerm.PYRPARTICLES_COMMAND_TRAIL, true);
+	private static final Param paramList = new Param(Utils.asList("list", "l"), null, PPPerm.PYRPARTICLES_COMMAND_TRAIL, true, false);
+	private static final Param paramStop = new Param(Utils.asList("stop", "cancel"), null, PPPerm.PYRPARTICLES_COMMAND_TRAIL, true, false);
+	private static final Param paramTrail = new Param(Utils.asList("trail", "t"), "id", PPPerm.PYRPARTICLES_COMMAND_TRAIL, true, false);
 	private String list = "";
 
 	static {
@@ -73,7 +73,7 @@ public class CommandTrail extends CommandArgument {
 			// unknown trail
 			Trail effect = Utils.valueOfOrNull(Trail.class, value.toUpperCase());
 			if (effect == null) {
-				PPLocale.MSG_PYRPARTICLES_INVALIDTRAILPARAM.send(sender, "{parameter}", parameter.toString(), "{value}", value);
+				PPLocale.MSG_PYRPARTICLES_INVALIDTRAILPARAM.send(sender, "{parameter}", "-" + parameter.toString() + (parameter.getDescription() == null ? "" : ":" + value));
 				return null;
 			}
 			// found trail

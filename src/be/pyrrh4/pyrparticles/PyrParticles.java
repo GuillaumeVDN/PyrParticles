@@ -56,12 +56,7 @@ public class PyrParticles extends PyrPlugin implements Listener {
 
 	// misc
 	private List<Integer> tasksIds = new ArrayList<Integer>();
-	private MainGUI mainGUI;
 	private ItemData hotbarItem;
-
-	public MainGUI getMainGUI() {
-		return mainGUI;
-	}
 
 	public ItemData getHotbarItem() {
 		return hotbarItem;
@@ -256,12 +251,6 @@ public class PyrParticles extends PyrPlugin implements Listener {
 		tasksIds.add(Bukkit.getScheduler().scheduleSyncRepeatingTask(this, new TrailsRunnable(), 40L, trailsTicks));
 		tasksIds.add(Bukkit.getScheduler().scheduleSyncRepeatingTask(this, new MainRunnable(), 40L, 20L));
 
-		// eventually unregister GUI
-		if (mainGUI != null) {
-			mainGUI.unregister();
-		}
-		mainGUI = new MainGUI();
-
 		// update items
 		if (hotbarItemSlot != -1) {
 			for (Player pl : Utils.getOnlinePlayers()) {
@@ -302,7 +291,7 @@ public class PyrParticles extends PyrPlugin implements Listener {
 		CommandRoot root = new CommandRoot(this, Utils.asList("pyrparticles", "pp", "pparticles", "cosmetics"), null, null, true) {
 			@Override
 			protected void perform(CommandCall call) {
-				PyrParticles.inst().getMainGUI().open(call.getSenderAsPlayer());
+				new MainGUI().open(call.getSenderAsPlayer());
 			}
 		};
 		registerCommand(root, PPPerm.PYRPARTICLES_ADMIN);
@@ -362,7 +351,7 @@ public class PyrParticles extends PyrPlugin implements Listener {
 	public void event(InventoryClickEvent event) {
 		if (hotbarItem.isSimilar(event.getCurrentItem())) {
 			event.setCancelled(true);
-			mainGUI.open((Player) event.getWhoClicked());
+			new MainGUI().open((Player) event.getWhoClicked());
 			return;
 		}
 		Gadget gadget = Gadget.getGadgetFromItem(event.getCurrentItem());
@@ -376,7 +365,7 @@ public class PyrParticles extends PyrPlugin implements Listener {
 	public void event(PlayerInteractEvent event) {
 		if (hotbarItem.isSimilar(event.getItem())) {
 			event.setCancelled(true);
-			mainGUI.open(event.getPlayer());
+			new MainGUI().open(event.getPlayer());
 			return;
 		}
 		Gadget gadget = Gadget.getGadgetFromItem(event.getItem());

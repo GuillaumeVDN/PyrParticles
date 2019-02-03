@@ -21,7 +21,7 @@ public class MainGUI extends GUI {
 	// fields and constructor
 	public MainGUI() {
 		super(PyrParticles.inst(), PPLocale.GUI_PYRPARTICLES_MAINNAME.getLine(), 27, 26);
-		// preload
+		// load
 		setRegularItem(new ClickeableItem(getMenuItem("particles", 10, Mat.BLAZE_POWDER, PPLocale.GUI_PYRPARTICLES_MAINPARTICLESNAME, PPLocale.GUI_PYRPARTICLES_MAINPARTICLESLORE)) {
 			@Override
 			public boolean onClick(Player player, ClickType clickType, GUI gui, int pageIndex) {

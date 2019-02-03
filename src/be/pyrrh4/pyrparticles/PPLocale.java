@@ -19,20 +19,20 @@ public class PPLocale {
 
 	public static final Text MSG_PYRPARTICLES_INVALIDGADGETPARAM = new Text(
 			"MSG_PYRPARTICLES_INVALIDGADGETPARAM", file,
-			"en_US", "&6PyrParticles >> &7Parameter &c{parameter} [{value}] &7should be an existing gadget.",
-			"fr_FR", "&6PyrParticles >> &7Le paramètre &c{parameter} [{value}] &7devrait être un gadget existant."
+			"en_US", "&6PyrParticles >> &7Parameter &c{parameter} &7should be an existing gadget.",
+			"fr_FR", "&6PyrParticles >> &7Le paramètre &c{parameter} &7devrait être un gadget existant."
 			);
 
 	public static final Text MSG_PYRPARTICLES_INVALIDPARTICLEPARAM = new Text(
 			"MSG_PYRPARTICLES_INVALIDPARTICLEPARAM", file,
-			"en_US", "&6PyrParticles >> &7Parameter &c{parameter} [{value}] &7should be an existing particle effect.",
-			"fr_FR", "&6PyrParticles >> &7Le paramètre &c{parameter} [{value}] &7devrait être un effet de particule existant."
+			"en_US", "&6PyrParticles >> &7Parameter &c{parameter} &7should be an existing particle effect.",
+			"fr_FR", "&6PyrParticles >> &7Le paramètre &c{parameter} &7devrait être un effet de particule existant."
 			);
 
 	public static final Text MSG_PYRPARTICLES_INVALIDTRAILPARAM = new Text(
 			"MSG_PYRPARTICLES_INVALIDTRAILPARAM", file,
-			"en_US", "&6PyrParticles >> &7Parameter &c{parameter} [{value}] &7should be an existing trail.",
-			"fr_FR", "&6PyrParticles >> &7Le paramètre &c{parameter} [{value}] &7devrait être une trainée existante."
+			"en_US", "&6PyrParticles >> &7Parameter &c{parameter} &7should be an existing trail.",
+			"fr_FR", "&6PyrParticles >> &7Le paramètre &c{parameter} &7devrait être une trainée existante."
 			);
 
 	public static final Text MSG_PYRPARTICLES_GADGETLIST = new Text(

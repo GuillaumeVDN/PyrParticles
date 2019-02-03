@@ -18,8 +18,8 @@ import be.pyrrh4.pyrparticles.gadget.Gadget;
 // TODO : (for this and also commandparticle and commandtrail) specify target player
 public class CommandGadget extends CommandArgument {
 
-	private static final Param paramList = new Param(Utils.asList("list", "l"), null, PPPerm.PYRPARTICLES_COMMAND_GADGET, true);
-	private static final Param paramGadget = new Param(Utils.asList("gadget", "g"), "id", PPPerm.PYRPARTICLES_COMMAND_GADGET, true);
+	private static final Param paramList = new Param(Utils.asList("list", "l"), null, PPPerm.PYRPARTICLES_COMMAND_GADGET, true, false);
+	private static final Param paramGadget = new Param(Utils.asList("gadget", "g"), "id", PPPerm.PYRPARTICLES_COMMAND_GADGET, true, false);
 	private String list = "";
 
 	static {
@@ -63,7 +63,7 @@ public class CommandGadget extends CommandArgument {
 			// unknown gadget
 			Gadget gadget = Utils.valueOfOrNull(Gadget.class, value.toUpperCase());
 			if (gadget == null) {
-				PPLocale.MSG_PYRPARTICLES_INVALIDGADGETPARAM.send(sender, "{parameter}", parameter.toString(), "{value}", value);
+				PPLocale.MSG_PYRPARTICLES_INVALIDGADGETPARAM.send(sender, "{parameter}", "-" + parameter.toString() + (parameter.getDescription() == null ? "" : ":" + value));
 				return null;
 			}
 			// found gadget

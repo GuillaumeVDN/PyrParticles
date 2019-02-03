@@ -17,9 +17,9 @@ import be.pyrrh4.pyrparticles.particle.ParticleEffect;
 
 public class CommandParticle extends CommandArgument {
 
-	private static final Param paramList = new Param(Utils.asList("list", "l"), null, PPPerm.PYRPARTICLES_COMMAND_PARTICLE, true);
-	private static final Param paramStop = new Param(Utils.asList("stop", "cancel"), null, PPPerm.PYRPARTICLES_COMMAND_PARTICLE, true);
-	private static final Param paramParticle = new Param(Utils.asList("particle", "p"), "id", PPPerm.PYRPARTICLES_COMMAND_PARTICLE, true);
+	private static final Param paramList = new Param(Utils.asList("list", "l"), null, PPPerm.PYRPARTICLES_COMMAND_PARTICLE, true, false);
+	private static final Param paramStop = new Param(Utils.asList("stop", "cancel"), null, PPPerm.PYRPARTICLES_COMMAND_PARTICLE, true, false);
+	private static final Param paramParticle = new Param(Utils.asList("particle", "p"), "id", PPPerm.PYRPARTICLES_COMMAND_PARTICLE, true, false);
 	private String list = "";
 
 	static {
@@ -73,7 +73,7 @@ public class CommandParticle extends CommandArgument {
 			// unknown particle
 			ParticleEffect effect = Utils.valueOfOrNull(ParticleEffect.class, value.toUpperCase());
 			if (effect == null) {
-				PPLocale.MSG_PYRPARTICLES_INVALIDPARTICLEPARAM.send(sender, "{parameter}", parameter.toString(), "{value}", value);
+				PPLocale.MSG_PYRPARTICLES_INVALIDPARTICLEPARAM.send(sender, "{parameter}", "-" + parameter.toString() + (parameter.getDescription() == null ? "" : ":" + value));
 				return null;
 			}
 			// found particle
