@@ -17,9 +17,10 @@ import be.pyrrh4.pyrparticles.particle.ParticleEffect;
 
 public class CommandParticle extends CommandArgument {
 
-	private static final Param paramList = new Param(Utils.asList("list", "l"), null, PPPerm.PYRPARTICLES_COMMAND_PARTICLE, true, false);
-	private static final Param paramStop = new Param(Utils.asList("stop", "cancel"), null, PPPerm.PYRPARTICLES_COMMAND_PARTICLE, true, false);
-	private static final Param paramParticle = new Param(Utils.asList("particle", "p"), "id", PPPerm.PYRPARTICLES_COMMAND_PARTICLE, true, false);
+	private static final Param paramList = new Param(Utils.asList("list", "l"), null, null, false, false);
+	private static final Param paramStop = new Param(Utils.asList("stop", "cancel"), null, null, false, false);
+	private static final Param paramParticle = new Param(Utils.asList("particle", "p"), "id", null, false, false);
+	private static final Param paramPlayer = new Param(Utils.asList("player", "p"), "name", PPPerm.PYRPARTICLES_COMMAND_PARTICLE_OTHERS, false, false);
 	private String list = "";
 
 	static {
@@ -34,7 +35,7 @@ public class CommandParticle extends CommandArgument {
 	}
 
 	public CommandParticle() {
-		super(PyrParticles.inst(), Utils.asList("particle"), "particle manipulation", PPPerm.PYRPARTICLES_COMMAND_PARTICLE, true, paramList, paramStop, paramParticle);
+		super(PyrParticles.inst(), Utils.asList("particle"), "particle manipulation", PPPerm.PYRPARTICLES_COMMAND_PARTICLE, false, paramList, paramStop, paramParticle, paramPlayer);
 		// initialize list
 		List<String> particles = Utils.emptyList();
 		for (ParticleEffect effect : ParticleEffect.values()) {
@@ -45,20 +46,26 @@ public class CommandParticle extends CommandArgument {
 
 	@Override
 	public void perform(CommandCall call) {
-		Player player = call.getSenderAsPlayer();
+		CommandSender sender = call.getSender();
 		// list
 		if (paramList.has(call)) {
-			PPLocale.MSG_PYRPARTICLES_PARTICLELIST.send(call.getSender(), "{list}", list);
+			PPLocale.MSG_PYRPARTICLES_PARTICLELIST.send(sender, "{list}", list);
 		}
 		// stop
 		else if (paramStop.has(call)) {
-			ParticleEffect.stop(call.getSenderAsPlayer());
+			Player target = paramPlayer.has(call) ? paramPlayer.getPlayer(call, true) : (sender instanceof Player ? (Player) sender : null);
+			if (target != null) {
+				ParticleEffect.stop(target);
+			}
 		}
 		// particle
 		else if (paramParticle.has(call)) {
 			ParticleEffect effect = paramParticle.get(call, PARTICLE_PARSER);
 			if (effect != null) {
-				effect.start(player);
+				Player target = paramPlayer.has(call) ? paramPlayer.getPlayer(call, true) : (sender instanceof Player ? (Player) sender : null);
+				if (target != null) {
+					effect.start(target);
+				}
 			}
 		}
 		// unknown

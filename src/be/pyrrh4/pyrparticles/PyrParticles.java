@@ -288,10 +288,14 @@ public class PyrParticles extends PyrPlugin implements Listener {
 		Bukkit.getPluginManager().registerEvents(this, this);
 
 		// commands
-		CommandRoot root = new CommandRoot(this, Utils.asList("pyrparticles", "pp", "pparticles", "cosmetics"), null, null, true) {
+		CommandRoot root = new CommandRoot(this, Utils.asList("pyrparticles", "pp", "pparticles", "cosmetics"), null, null, false) {
 			@Override
 			protected void perform(CommandCall call) {
-				new MainGUI().open(call.getSenderAsPlayer());
+				if (call.senderIsPlayer()) {
+					new MainGUI().open(call.getSenderAsPlayer());
+				} else {
+					super.perform(call);
+				}
 			}
 		};
 		registerCommand(root, PPPerm.PYRPARTICLES_ADMIN);

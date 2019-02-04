@@ -18,8 +18,9 @@ import be.pyrrh4.pyrparticles.gadget.Gadget;
 // TODO : (for this and also commandparticle and commandtrail) specify target player
 public class CommandGadget extends CommandArgument {
 
-	private static final Param paramList = new Param(Utils.asList("list", "l"), null, PPPerm.PYRPARTICLES_COMMAND_GADGET, true, false);
-	private static final Param paramGadget = new Param(Utils.asList("gadget", "g"), "id", PPPerm.PYRPARTICLES_COMMAND_GADGET, true, false);
+	private static final Param paramList = new Param(Utils.asList("list", "l"), null, null, false, false);
+	private static final Param paramGadget = new Param(Utils.asList("gadget", "g"), "id", null, false, false);
+	private static final Param paramPlayer = new Param(Utils.asList("player", "p"), "name", PPPerm.PYRPARTICLES_COMMAND_GADGET_OTHERS, false, false);
 	private String list = "";
 
 	static {
@@ -28,7 +29,7 @@ public class CommandGadget extends CommandArgument {
 	}
 
 	public CommandGadget() {
-		super(PyrParticles.inst(), Utils.asList("gadget"), "gadgets manipulation", PPPerm.PYRPARTICLES_COMMAND_GADGET, true, paramList, paramGadget);
+		super(PyrParticles.inst(), Utils.asList("gadget"), "gadgets manipulation", PPPerm.PYRPARTICLES_COMMAND_GADGET, false, paramList, paramGadget, paramPlayer);
 		// initialize list
 		List<String> gadgets = Utils.emptyList();
 		for (Gadget gadget : Gadget.values()) {
@@ -39,21 +40,24 @@ public class CommandGadget extends CommandArgument {
 
 	@Override
 	public void perform(CommandCall call) {
-		Player player = call.getSenderAsPlayer();
+		CommandSender sender = call.getSender();
 		// list
 		if (paramList.has(call)) {
-			PPLocale.MSG_PYRPARTICLES_GADGETLIST.send(call.getSender(), "{list}", list);
+			PPLocale.MSG_PYRPARTICLES_GADGETLIST.send(sender, "{list}", list);
 		}
 		// gadget
 		else if (paramGadget.has(call)) {
 			Gadget gadget = paramGadget.get(call, GADGET_PARSER);
 			if (gadget != null) {
-				gadget.startOrGiveItem(player);
+				Player target = paramPlayer.has(call) ? paramPlayer.getPlayer(call, true) : (sender instanceof Player ? (Player) sender : null);
+				if (target != null) {
+					gadget.startOrGiveItem(target);
+				}
 			}
 		}
 		// unknown
 		else {
-			showHelp(call.getSender());
+			showHelp(sender);
 		}
 	}
 

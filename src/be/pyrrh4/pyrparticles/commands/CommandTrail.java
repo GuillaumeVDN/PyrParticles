@@ -17,9 +17,10 @@ import be.pyrrh4.pyrparticles.trail.Trail;
 
 public class CommandTrail extends CommandArgument {
 
-	private static final Param paramList = new Param(Utils.asList("list", "l"), null, PPPerm.PYRPARTICLES_COMMAND_TRAIL, true, false);
-	private static final Param paramStop = new Param(Utils.asList("stop", "cancel"), null, PPPerm.PYRPARTICLES_COMMAND_TRAIL, true, false);
-	private static final Param paramTrail = new Param(Utils.asList("trail", "t"), "id", PPPerm.PYRPARTICLES_COMMAND_TRAIL, true, false);
+	private static final Param paramList = new Param(Utils.asList("list", "l"), null, PPPerm.PYRPARTICLES_COMMAND_TRAIL, false, false);
+	private static final Param paramStop = new Param(Utils.asList("stop", "cancel"), null, PPPerm.PYRPARTICLES_COMMAND_TRAIL, false, false);
+	private static final Param paramTrail = new Param(Utils.asList("trail", "t"), "id", PPPerm.PYRPARTICLES_COMMAND_TRAIL, false, false);
+	private static final Param paramPlayer = new Param(Utils.asList("player", "p"), "name", PPPerm.PYRPARTICLES_COMMAND_TRAIL_OTHERS, false, false);
 	private String list = "";
 
 	static {
@@ -34,7 +35,7 @@ public class CommandTrail extends CommandArgument {
 	}
 
 	public CommandTrail() {
-		super(PyrParticles.inst(), Utils.asList("trail"), "trail manipulation", PPPerm.PYRPARTICLES_COMMAND_TRAIL, true, paramList, paramStop, paramTrail);
+		super(PyrParticles.inst(), Utils.asList("trail"), "trail manipulation", PPPerm.PYRPARTICLES_COMMAND_TRAIL, false, paramList, paramStop, paramTrail);
 		// initialize list
 		List<String> trails = Utils.emptyList();
 		for (Trail effect : Trail.values()) {
@@ -45,20 +46,26 @@ public class CommandTrail extends CommandArgument {
 
 	@Override
 	public void perform(CommandCall call) {
-		Player player = call.getSenderAsPlayer();
+		CommandSender sender = call.getSender();
 		// list
 		if (paramList.has(call)) {
-			PPLocale.MSG_PYRPARTICLES_TRAILLIST.send(call.getSender(), "{list}", list);
+			PPLocale.MSG_PYRPARTICLES_TRAILLIST.send(sender, "{list}", list);
 		}
 		// stop
 		else if (paramStop.has(call)) {
-			Trail.stop(call.getSenderAsPlayer());
+			Player target = paramPlayer.has(call) ? paramPlayer.getPlayer(call, true) : (sender instanceof Player ? (Player) sender : null);
+			if (target != null) {
+				Trail.stop(target);
+			}
 		}
 		// gadget
 		else if (paramTrail.has(call)) {
 			Trail effect = paramTrail.get(call, TRAIL_PARSER);
 			if (effect != null) {
-				effect.start(player);
+				Player target = paramPlayer.has(call) ? paramPlayer.getPlayer(call, true) : (sender instanceof Player ? (Player) sender : null);
+				if (target != null) {
+					effect.start(target);
+				}
 			}
 		}
 		// unknown
